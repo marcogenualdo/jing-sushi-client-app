@@ -1,8 +1,16 @@
 {
   "name": "blank",
   "version": "0.0.1",
+  "description": "Client app for jing sushi.",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
+    "@google-cloud/firestore": "^4.9.4",
     "@ionic/react": "^5.5.0",
     "@ionic/react-router": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -35,12 +43,6 @@
     "workbox-strategies": "^5.1.4",
     "workbox-streams": "^5.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -59,5 +61,7 @@
       "last 1 safari version"
     ]
   },
-  "description": "An Ionic project"
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  }
 }

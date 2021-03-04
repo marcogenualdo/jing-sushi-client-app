@@ -1,0 +1,14 @@
+ion-item {
+  --inner-padding-top: 5px;
+  --inner-padding-bottom: 5px;
+  --inner-padding-end: 0;
+}
+
+ion-avatar {
+  height: 18%;
+  width: 18%;
+}
+
+.menu-item-text h4 {
+  color: #fff;
+}

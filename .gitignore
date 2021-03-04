@@ -26,3 +26,10 @@ yarn-error.log*
 
 # Optional eslint cache
 .eslintcache
+
+# editor
+.vim/
+.editorconfig
+
+# env
+.envrc
