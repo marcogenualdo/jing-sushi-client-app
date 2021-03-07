@@ -1,8 +1,13 @@
-import { MenuItem } from "../../types";
+import { MenuItemData } from "../../types";
 
-export const menuData: Record<string, MenuItem[]> = {
+export const menuData: Record<string, MenuItemData[]> = {
   Rice: [
-    { name: "Rice 1", code: "C1", price: 50.45 },
+    {
+      name: "Rice 1",
+      code: "C1",
+      price: 50.45,
+      description: "Riso pasta, pizza, napoli, cane.",
+    },
     {
       name: "Rice 2",
       code: "C2",

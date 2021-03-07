@@ -15,9 +15,15 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { addOutline, removeOutline } from "ionicons/icons";
-import React, { useState } from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
+import {
+  cartItemDecrement,
+  cartItemIncrement,
+  useAppSelector,
+} from "../components/store";
 import { menuData } from "../tests/mocks/menu";
+import { MenuItemData } from "../types";
 import "./menu.css";
 
 interface CategoryDetailProps
@@ -25,28 +31,45 @@ interface CategoryDetailProps
     category: string;
   }> {}
 
-export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
-  let startQuantities: Record<string, number> = {};
-  for (let item of menuData[match.params.category]) {
-    startQuantities[item.code] = 0;
-    console.log(startQuantities);
-  }
-  const [quantities, setQuantities] = useState<Record<string, number>>(
-    startQuantities
+const MenuItem: React.FC<{ item: MenuItemData }> = ({ item }) => {
+  const quantity = useAppSelector(
+    (state) => state.cart[item.code]?.quantity ?? 0
   );
 
-  const addToItemQuantity = (code: string, n: number) => {
-    let value = 0;
-    if (quantities[code] + n > 0) {
-      value = quantities[code] + n;
-      console.log(quantities);
-    }
-    return setQuantities({
-      ...quantities,
-      [code]: value,
-    });
-  };
+  return (
+    <IonItem key={item.code}>
+      <IonAvatar slot="start" style={{ marginRight: "10px" }}>
+        <img
+          src="https://i0.wp.com/www.candidafood.com/wp-content/uploads/2009/11/foods-to-eat-candida.jpg?resize=180%2C180"
+          alt="none"
+        />
+      </IonAvatar>
 
+      <IonNote color="dark" className="menu-item-text">
+        <h4>{item.name}</h4>
+        <p>{item.description}</p>
+      </IonNote>
+
+      <IonLabel slot="end" style={{ paddingRight: 0, mparginRight: 0 }}>
+        <h2 style={{ textAlign: "center" }}>{item.price}€</h2>
+        <IonButtons
+          slot="secondary"
+          style={{ justifyContent: "center", paddingTop: "1.5rem" }}
+        >
+          <IonButton onClick={() => cartItemDecrement({ quantity, ...item })}>
+            <IonIcon slot="icon-only" icon={removeOutline} />
+          </IonButton>
+          <h2>{quantity}</h2>
+          <IonButton onClick={() => cartItemIncrement({ quantity, ...item })}>
+            <IonIcon slot="icon-only" icon={addOutline} />
+          </IonButton>
+        </IonButtons>
+      </IonLabel>
+    </IonItem>
+  );
+};
+
+export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
   return (
     <IonPage>
       <IonHeader>
@@ -61,35 +84,7 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
       <IonContent fullscreen>
         <IonList>
           {menuData[match.params.category].map((item) => (
-            <IonItem>
-              <IonAvatar slot="start" style={{ marginRight: "10px" }}>
-                <img
-                  src="https://i0.wp.com/www.candidafood.com/wp-content/uploads/2009/11/foods-to-eat-candida.jpg?resize=180%2C180"
-                  alt="none"
-                />
-              </IonAvatar>
-              <IonNote className="menu-item-text">
-                <h4>{item.name}</h4>
-                <p>{item.description}</p>
-              </IonNote>
-              <IonLabel slot="end" style={{ paddingRight: 0, mparginRight: 0 }}>
-                <h2 style={{ textAlign: "center", paddingBottom: "15%" }}>
-                  {item.price}€
-                </h2>
-                <IonButtons
-                  slot="secondary"
-                  style={{ justifyContent: "center" }}
-                >
-                  <IonButton onClick={() => addToItemQuantity(item.code, -1)}>
-                    <IonIcon slot="icon-only" icon={removeOutline} />
-                  </IonButton>
-                  <h2>{quantities[item.code]}</h2>
-                  <IonButton onClick={() => addToItemQuantity(item.code, 1)}>
-                    <IonIcon slot="icon-only" icon={addOutline} />
-                  </IonButton>
-                </IonButtons>
-              </IonLabel>
-            </IonItem>
+            <MenuItem item={item} />
           ))}
         </IonList>
       </IonContent>

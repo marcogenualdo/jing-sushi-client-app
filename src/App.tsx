@@ -23,6 +23,7 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/typography.css";
 import { cart, informationCircle, map, personCircle } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
+import { Cart } from "./pages/cart";
 import Info from "./pages/info";
 import { CategoryDetail, MenuCategories } from "./pages/menu";
 /* Theme variables */
@@ -35,6 +36,7 @@ export const BottomNav: React.FC = () => (
       <Route exact path="/:tab(info)" component={Info} />
       <Route exact path="/:tab(menu)" component={MenuCategories} />
       <Route exact path="/:tab(menu)/:category" component={CategoryDetail} />
+      <Route exact path="/:tab(cart)" component={Cart} />
     </IonRouterOutlet>
 
     <IonTabBar slot="bottom">
@@ -58,12 +60,14 @@ export const BottomNav: React.FC = () => (
   </IonTabs>
 );
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <BottomNav />
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <BottomNav />
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;
