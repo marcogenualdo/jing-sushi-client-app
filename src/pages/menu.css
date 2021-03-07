@@ -9,6 +9,7 @@ ion-avatar {
   width: 18%;
 }
 
-.menu-item-text h4 {
-  color: #fff;
+.menu-item-text h4,
+p {
+  color: var(--ion-text-color);
 }
