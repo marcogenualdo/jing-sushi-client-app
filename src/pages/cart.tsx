@@ -22,6 +22,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import React from "react";
+import Layout from "../components/Layout";
 import {
   cartItemDecrement,
   cartItemIncrement,
@@ -78,31 +79,17 @@ export const Cart: React.FC = () => {
   const cartData = useAppSelector((state) => state.cart);
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Carrello</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Carrello</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-
-        <IonList>
-          {Object.values(cartData).map((item) => (
-            <CartItem item={item} />
-          ))}
-        </IonList>
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton>
-            <IonIcon icon={sendOutline} />
-          </IonFabButton>
-        </IonFab>
-      </IonContent>
-    </IonPage>
+    <Layout pageName="Carrello">
+      <IonList>
+        {Object.values(cartData).map((item) => (
+          <CartItem item={item} />
+        ))}
+      </IonList>
+      <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFabButton>
+          <IonIcon icon={sendOutline} />
+        </IonFabButton>
+      </IonFab>
+    </Layout>
   );
 };

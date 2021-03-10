@@ -17,6 +17,7 @@ import {
 import { addOutline, removeOutline } from "ionicons/icons";
 import React from "react";
 import { RouteComponentProps } from "react-router";
+import Layout from "../components/Layout";
 import {
   cartItemDecrement,
   cartItemIncrement,
@@ -99,36 +100,22 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
   console.log(menuData);
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Menù</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Menù</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-
-        <IonList>
-          {menuData.map(({ name }, index) => (
-            <IonItem detail routerLink={`/menu/${index}`}>
-              <IonAvatar slot="start">
-                <img
-                  src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"
-                  alt="none"
-                />
-              </IonAvatar>
-              <IonLabel>
-                <h2>{name}</h2>
-              </IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
-      </IonContent>
-    </IonPage>
+    <Layout pageName="Menù">
+      <IonList>
+        {menuData.map(({ name }, index) => (
+          <IonItem detail routerLink={`/menu/${index}`}>
+            <IonAvatar slot="start">
+              <img
+                src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"
+                alt="none"
+              />
+            </IonAvatar>
+            <IonLabel>
+              <h2>{name}</h2>
+            </IonLabel>
+          </IonItem>
+        ))}
+      </IonList>
+    </Layout>
   );
 };
