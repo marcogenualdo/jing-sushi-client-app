@@ -2,18 +2,13 @@ import {
   IonAvatar,
   IonButton,
   IonButtons,
-  IonContent,
   IonFab,
   IonFabButton,
-  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonNote,
-  IonPage,
-  IonTitle,
-  IonToolbar,
 } from "@ionic/react";
 import {
   addOutline,

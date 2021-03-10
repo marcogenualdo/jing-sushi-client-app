@@ -58,9 +58,4 @@ describe("addToCartItemInner", () => {
 
     expect(output).toMatchObject(res);
   });
-
-  test("fetch menu", async () => {
-    const menu = await fetchMenu();
-    console.log(menu);
-  });
 });

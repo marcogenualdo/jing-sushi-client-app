@@ -97,7 +97,6 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
 
 export const MenuCategories: React.FC<RouteComponentProps> = () => {
   const menuData = useAppSelector((state) => state.menu);
-  console.log(menuData);
 
   return (
     <Layout pageName="Menù">
