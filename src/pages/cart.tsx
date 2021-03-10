@@ -27,7 +27,7 @@ import {
   cartItemIncrement,
   cartItemTrash,
   useAppSelector,
-} from "../components/store";
+} from "../tools/store";
 import { CartItemData } from "../types";
 import "./menu.css";
 
@@ -52,7 +52,7 @@ const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
 
       <IonLabel slot="end" style={{ paddingRight: "1rem", marginRight: 0 }}>
         <div style={{ display: "flex" }}>
-          <h2 style={{ margin: "auto" }}>{item.price}€</h2>
+          <h2 style={{ margin: "auto" }}>{item.price.toFixed(2)} €</h2>
           <IonButton onClick={() => cartItemTrash(item)}>
             <IonIcon icon={trashOutline} />
           </IonButton>

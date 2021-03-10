@@ -21,8 +21,7 @@ import {
   cartItemDecrement,
   cartItemIncrement,
   useAppSelector,
-} from "../components/store";
-import { menuData } from "../tests/mocks/menu";
+} from "../tools/store";
 import { MenuItemData } from "../types";
 import "./menu.css";
 
@@ -51,7 +50,7 @@ const MenuItem: React.FC<{ item: MenuItemData }> = ({ item }) => {
       </IonNote>
 
       <IonLabel slot="end" style={{ paddingRight: 0, mparginRight: 0 }}>
-        <h2 style={{ textAlign: "center" }}>{item.price}€</h2>
+        <h2 style={{ textAlign: "center" }}>{item.price.toFixed(2)} €</h2>
         <IonButtons
           slot="secondary"
           style={{ justifyContent: "center", paddingTop: "1.5rem" }}
@@ -70,6 +69,9 @@ const MenuItem: React.FC<{ item: MenuItemData }> = ({ item }) => {
 };
 
 export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
+  const category = match.params.category;
+  const categoryData = useAppSelector((state) => state.menu[Number(category)]);
+
   return (
     <IonPage>
       <IonHeader>
@@ -77,13 +79,13 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/menu" />
           </IonButtons>
-          <IonTitle>{match.params.category}</IonTitle>
+          <IonTitle>{categoryData.name}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
         <IonList>
-          {menuData[match.params.category].map((item) => (
+          {categoryData.dishes.map((item) => (
             <MenuItem item={item} />
           ))}
         </IonList>
@@ -93,6 +95,9 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
 };
 
 export const MenuCategories: React.FC<RouteComponentProps> = () => {
+  const menuData = useAppSelector((state) => state.menu);
+  console.log(menuData);
+
   return (
     <IonPage>
       <IonHeader>
@@ -109,8 +114,8 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
         </IonHeader>
 
         <IonList>
-          {Object.keys(menuData).map((name) => (
-            <IonItem detail routerLink={`/menu/${name}`}>
+          {menuData.map(({ name }, index) => (
+            <IonItem detail routerLink={`/menu/${index}`}>
               <IonAvatar slot="start">
                 <img
                   src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"

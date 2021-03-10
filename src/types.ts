@@ -4,8 +4,14 @@ export interface MenuItemData {
   name: string;
   code: DishCode;
   price: number;
-  picture?: string;
+  image?: string;
   description?: string;
+}
+
+export interface MenuCategoryData {
+  name: string;
+  image: string;
+  dishes: MenuItemData[];
 }
 
 export interface CartItemData extends MenuItemData {

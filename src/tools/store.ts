@@ -1,6 +1,6 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { CartData, CartItemData } from "../types";
+import { CartData, CartItemData, MenuCategoryData } from "../types";
 
 /**
  * Adds a quantity to an item in the shopping cart.
@@ -36,12 +36,12 @@ export interface AddToCartItemActionPayload {
   n: number;
 }
 
-const initialState: CartData = {};
+const cartInitialState: CartData = {};
 
 // redux store
 const cartSlice = createSlice({
   name: "cart",
-  initialState,
+  initialState: cartInitialState,
   reducers: {
     addToCartItem: (
       state,
@@ -52,7 +52,20 @@ const cartSlice = createSlice({
   },
 });
 
-const store = configureStore({ reducer: { cart: cartSlice.reducer } });
+const menuInitialState: MenuCategoryData[] = [];
+
+const menuSlice = createSlice({
+  name: "menu",
+  initialState: menuInitialState,
+  reducers: {
+    setMenu: (state, action: PayloadAction<MenuCategoryData[]>) =>
+      action.payload,
+  },
+});
+
+const store = configureStore({
+  reducer: { cart: cartSlice.reducer, menu: menuSlice.reducer },
+});
 
 export type AppState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
@@ -75,3 +88,6 @@ export const cartItemTrash = (item: CartItemData) => {
     store.dispatch(cartSlice.actions.addToCartItem({ item, n: -quantity }));
   }
 };
+
+export const updateMenu = (menuData: MenuCategoryData[]) =>
+  store.dispatch(menuSlice.actions.setMenu(menuData));

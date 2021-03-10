@@ -28,6 +28,7 @@ import Info from "./pages/info";
 import { CategoryDetail, MenuCategories } from "./pages/menu";
 /* Theme variables */
 import "./theme/variables.css";
+import { fetchMenu } from "./tools/firestore";
 
 export const BottomNav: React.FC = () => (
   <IonTabs>
@@ -61,6 +62,8 @@ export const BottomNav: React.FC = () => (
 );
 
 const App: React.FC = () => {
+  fetchMenu();
+
   return (
     <IonApp>
       <IonReactRouter>
