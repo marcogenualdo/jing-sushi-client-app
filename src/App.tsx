@@ -26,6 +26,7 @@ import { Redirect, Route } from "react-router-dom";
 import { Cart } from "./pages/cart";
 import Info from "./pages/info";
 import { CategoryDetail, MenuCategories } from "./pages/menu";
+import Profile from "./pages/profile";
 /* Theme variables */
 import "./theme/variables.css";
 import { fetchMenu } from "./tools/firestore";
@@ -38,6 +39,7 @@ export const BottomNav: React.FC = () => (
       <Route exact path="/:tab(menu)" component={MenuCategories} />
       <Route exact path="/:tab(menu)/:category" component={CategoryDetail} />
       <Route exact path="/:tab(cart)" component={Cart} />
+      <Route exact path="/:tab(profile)" component={Profile} />
     </IonRouterOutlet>
 
     <IonTabBar slot="bottom">
