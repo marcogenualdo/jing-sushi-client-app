@@ -13,6 +13,12 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+export const auth = firebase.auth();
+
+// login persisted when app is closed, until explicit signout
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+auth.languageCode = "it";
+
 export const fetchMenu = async () => {
   try {
     const firestore = firebase.firestore();

@@ -1,6 +1,7 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { CartData, CartItemData, MenuCategoryData } from "../types";
+import firebase from "firebase";
 
 /**
  * Adds a quantity to an item in the shopping cart.
@@ -36,9 +37,9 @@ export interface AddToCartItemActionPayload {
   n: number;
 }
 
+// --- CART --- //
 const cartInitialState: CartData = {};
 
-// redux store
 const cartSlice = createSlice({
   name: "cart",
   initialState: cartInitialState,
@@ -52,6 +53,7 @@ const cartSlice = createSlice({
   },
 });
 
+// --- MENU --- //
 const menuInitialState: MenuCategoryData[] = [];
 
 const menuSlice = createSlice({
