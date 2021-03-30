@@ -18,7 +18,7 @@ const Layout: React.FC<{ pageName: string }> = ({ pageName, children }) => (
     <IonContent fullscreen>
       <IonHeader collapse="condense">
         <IonToolbar>
-          <IonTitle size="large">Carrello</IonTitle>
+          <IonTitle size="large">{pageName}</IonTitle>
         </IonToolbar>
       </IonHeader>
       {children}
