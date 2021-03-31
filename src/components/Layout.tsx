@@ -6,7 +6,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { cart } from "ionicons/icons";
+import { cartOutline } from "ionicons/icons";
 import React from "react";
 import { useCartTotal } from "../tools/hooks";
 
@@ -20,7 +20,7 @@ const Layout: React.FC<{ pageName: string }> = ({ pageName, children }) => {
           <IonTitle>{pageName}</IonTitle>
           <IonTitle slot="end">
             <h1>
-              <IonIcon icon={cart} style={{ margin: "0 0.5rem" }} />
+              <IonIcon icon={cartOutline} style={{ margin: "0 0.5rem" }} />
               {cartTotal.toFixed(2)} €
             </h1>
           </IonTitle>
@@ -33,7 +33,7 @@ const Layout: React.FC<{ pageName: string }> = ({ pageName, children }) => {
             <IonTitle size="large">{pageName}</IonTitle>
             <IonTitle slot="end">
               <h1>
-                <IonIcon icon={cart} style={{ margin: "0 0.5rem" }} />
+                <IonIcon icon={cartOutline} style={{ margin: "0 0.5rem" }} />
                 {cartTotal.toFixed(2)} €
               </h1>
             </IonTitle>
