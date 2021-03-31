@@ -37,7 +37,7 @@ const MenuItem: React.FC<{ item: MenuItemData }> = ({ item }) => {
   );
 
   return (
-    <IonItem key={item.code}>
+    <IonItem key={item.code} className="menu-item">
       <IonAvatar slot="start" style={{ marginRight: "10px" }}>
         <img
           src="https://i0.wp.com/www.candidafood.com/wp-content/uploads/2009/11/foods-to-eat-candida.jpg?resize=180%2C180"
@@ -102,7 +102,7 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
     <Layout pageName="Menù">
       <IonList>
         {menuData.map(({ name }, index) => (
-          <IonItem detail routerLink={`/menu/${index}`}>
+          <IonItem detail routerLink={`/menu/${index}`} className="menu-item">
             <IonAvatar slot="start">
               <img
                 src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"
