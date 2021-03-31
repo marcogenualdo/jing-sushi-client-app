@@ -1,7 +1,6 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { CartData, CartItemData, MenuCategoryData } from "../types";
-import firebase from "firebase";
 
 /**
  * Adds a quantity to an item in the shopping cart.
