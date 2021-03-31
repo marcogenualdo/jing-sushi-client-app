@@ -25,7 +25,7 @@ import {
   useAppSelector,
 } from "../tools/store";
 import { CartItemData } from "../types";
-import "./menu.css";
+import "./cart.css";
 
 const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
   const quantity = useAppSelector(
@@ -80,8 +80,9 @@ export const Cart: React.FC = () => {
           <CartItem item={item} />
         ))}
       </IonList>
-      <IonFab vertical="bottom" horizontal="end" slot="fixed">
-        <IonFabButton>
+      <IonFab vertical="bottom" horizontal="start" slot="fixed">
+        <IonFabButton className="cart-fab">
+          <strong>Ordina</strong>
           <IonIcon icon={sendOutline} />
         </IonFabButton>
       </IonFab>
