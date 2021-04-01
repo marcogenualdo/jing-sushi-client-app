@@ -8,6 +8,7 @@ import {
   IonFabButton,
   IonHeader,
   IonIcon,
+  IonInput,
   IonItem,
   IonItemDivider,
   IonLabel,
@@ -18,6 +19,7 @@ import {
   IonSegmentButton,
   IonTextarea,
   IonTitle,
+  IonToggle,
   IonToolbar,
 } from "@ionic/react";
 import {
@@ -35,7 +37,13 @@ import {
   cartItemTrash,
   useAppSelector,
 } from "../tools/store";
-import { CartItemData } from "../types";
+import {
+  CartItemData,
+  OrderDraft,
+  OrderStatus,
+  OrderType,
+  PaymentType,
+} from "../types";
 import "./cart.css";
 
 export const Cart: React.FC = () => {
@@ -125,7 +133,22 @@ const OrderModal: React.FC<{
   isOpen: boolean;
   setIsOpen: (v: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
+  const cartData = useAppSelector((state) => state.cart);
   const orderTotal = useCartTotal();
+
+  const [orderData, setOrderData] = useState<OrderDraft>({
+    type: OrderType.Delivery,
+    paymentType: PaymentType.Cash,
+    status: OrderStatus.Pending,
+    notes: "",
+    deliveryAddress: "Indirizzo di prova, 00126, Roma",
+    plates: Object.values(cartData),
+    deliveryTime: new Date(),
+    userId: "",
+  });
+
+  const [editAddress, setEditAddress] = useState(false);
+  const toggleAddress = () => setEditAddress(!editAddress);
 
   return (
     <IonModal isOpen={isOpen}>
@@ -149,9 +172,19 @@ const OrderModal: React.FC<{
             <IonLabel>Modalità di pagamento</IonLabel>
           </IonItem>
           <IonItem>
-            <IonSegment>
-              <IonSegmentButton>Contanti</IonSegmentButton>
-              <IonSegmentButton>Pos</IonSegmentButton>
+            <IonSegment
+              value={orderData.paymentType}
+              onIonChange={(e) =>
+                setOrderData({
+                  ...orderData,
+                  paymentType: e.detail.value as PaymentType,
+                })
+              }
+            >
+              <IonSegmentButton value={PaymentType.Cash}>
+                Contanti
+              </IonSegmentButton>
+              <IonSegmentButton value={PaymentType.Pos}>Pos</IonSegmentButton>
             </IonSegment>
           </IonItem>
           <IonItemDivider />
@@ -161,19 +194,68 @@ const OrderModal: React.FC<{
             </IonLabel>
           </IonItem>
           <IonItem>
-            <IonSegment>
-              <IonSegmentButton>Consegna</IonSegmentButton>
-              <IonSegmentButton>Ritiro</IonSegmentButton>
+            <IonSegment
+              value={orderData.type}
+              onIonChange={(e) =>
+                setOrderData({
+                  ...orderData,
+                  type: e.detail.value as OrderType,
+                })
+              }
+            >
+              <IonSegmentButton value={OrderType.Delivery}>
+                Consegna
+              </IonSegmentButton>
+              <IonSegmentButton value={OrderType.Pickup}>
+                Ritiro
+              </IonSegmentButton>
             </IonSegment>
           </IonItem>
           <IonItem lines="none">
-            <IonLabel>Orario di consegna</IonLabel>
+            <IonLabel>
+              Orario di{" "}
+              {orderData.type === OrderType.Delivery ? "consegna" : "ritiro"}
+            </IonLabel>
             <IonDatetime
               displayFormat="HH:mm"
-              value={new Date().toString()}
-              onIonChange={(e) => console.log(e.detail.value!)}
+              value={orderData.deliveryTime.toString()}
+              onIonChange={(e) =>
+                setOrderData({
+                  ...orderData,
+                  deliveryTime: new Date(e.detail.value!),
+                })
+              }
             ></IonDatetime>
           </IonItem>
+          {orderData.type === OrderType.Delivery ? (
+            <>
+              <IonItem lines="none">
+                <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
+                <IonInput
+                  value={orderData.deliveryAddress}
+                  onIonChange={(e) =>
+                    setOrderData({
+                      ...orderData,
+                      deliveryAddress: e.detail.value!,
+                    })
+                  }
+                  disabled={!editAddress}
+                ></IonInput>
+              </IonItem>
+              <IonItem lines="none">
+                <IonItem>
+                  <IonLabel>Modifica indirizzo</IonLabel>
+                  <IonToggle
+                    checked={editAddress}
+                    onIonChange={toggleAddress}
+                    color="primary"
+                  />
+                </IonItem>
+              </IonItem>
+            </>
+          ) : (
+            <></>
+          )}
           <IonItem>
             <p>
               Ci riserviamo un mergine di tolleranza di +/- 10 minuti
@@ -191,8 +273,9 @@ const OrderModal: React.FC<{
               rows={6}
               cols={20}
               placeholder="Scrivi qui..."
-              value=""
-              onIonChange={(e) => console.log(e.detail.value!)}
+              onIonChange={(e) =>
+                setOrderData({ ...orderData, notes: e.detail.value! })
+              }
             ></IonTextarea>
           </IonItem>
           <IonButton expand="block" style={{ padding: "0 1rem" }}>
