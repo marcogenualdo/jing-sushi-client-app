@@ -8,6 +8,7 @@ import {
   IonFabButton,
   IonHeader,
   IonIcon,
+  IonImg,
   IonInput,
   IonItem,
   IonItemDivider,
@@ -29,6 +30,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import React, { useState } from "react";
+import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
 import { useCartTotal } from "../tools/hooks";
 import {
@@ -94,10 +96,7 @@ const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
   return (
     <IonItem key={item.code}>
       <IonAvatar slot="start" style={{ marginRight: "10px" }}>
-        <img
-          src="https://i0.wp.com/www.candidafood.com/wp-content/uploads/2009/11/foods-to-eat-candida.jpg?resize=180%2C180"
-          alt="null"
-        />
+        <IonImg src={defaultImage} alt="null" />
       </IonAvatar>
 
       <IonNote className="menu-item-text">
@@ -227,7 +226,7 @@ const OrderModal: React.FC<{
               }
             ></IonDatetime>
           </IonItem>
-          {orderData.type === OrderType.Delivery ? (
+          {orderData.type === OrderType.Delivery && (
             <>
               <IonItem lines="none">
                 <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
@@ -253,8 +252,6 @@ const OrderModal: React.FC<{
                 </IonItem>
               </IonItem>
             </>
-          ) : (
-            <></>
           )}
           <IonItem>
             <p>
