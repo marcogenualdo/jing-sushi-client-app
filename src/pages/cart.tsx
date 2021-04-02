@@ -64,9 +64,9 @@ export const Cart: React.FC = () => {
         </IonItem>
         <IonItem>
           <ul className="cart-bottom-ad">
-            <li>Ritiro: sconto del 10% per oridini maggiori di 20€</li>
+            <li>Ritiro: sconto del 10% per ordini maggiori di 20€</li>
             <li>
-              Consegna: sconto del 10% per oridini maggiori di 50€ (esclusi cap
+              Consegna: sconto del 10% per ordini maggiori di 50€ (esclusi cap
               00124, 00127)
             </li>
             <li>Una birra in omaggio per oridini superiori a 30€</li>
@@ -213,7 +213,7 @@ const OrderModal: React.FC<{
           <IonItem lines="none">
             <IonLabel>
               Orario di{" "}
-              {orderData.type === OrderType.Delivery ? "consegna" : "ritiro"}
+              {orderData.type === OrderType.Delivery ? "consegna" : "ritiro"}*
             </IonLabel>
             <IonDatetime
               displayFormat="HH:mm"
@@ -243,7 +243,9 @@ const OrderModal: React.FC<{
               </IonItem>
               <IonItem lines="none">
                 <IonItem>
-                  <IonLabel>Modifica indirizzo</IonLabel>
+                  <IonLabel style={{ whiteSpace: "break-spaces" }}>
+                    Utilizza un altro indirizzo per questo ordine
+                  </IonLabel>
                   <IonToggle
                     checked={editAddress}
                     onIonChange={toggleAddress}
@@ -255,7 +257,7 @@ const OrderModal: React.FC<{
           )}
           <IonItem>
             <p>
-              Ci riserviamo un mergine di tolleranza di +/- 10 minuti
+              *Ci riserviamo un margine di tolleranza di +/- 10 minuti
               sull'orario di consegna/ritiro.
             </p>
           </IonItem>
