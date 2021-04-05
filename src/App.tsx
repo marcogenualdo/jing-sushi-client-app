@@ -64,7 +64,11 @@ export const BottomNav: React.FC = () => (
 );
 
 const App: React.FC = () => {
-  fetchMenu();
+  try {
+    fetchMenu();
+  } catch (err) {
+    console.error(err);
+  }
 
   return (
     <IonApp>

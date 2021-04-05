@@ -39,6 +39,10 @@ export enum PaymentType {
 
 export type Address = string;
 
+export interface User {
+  address: Address;
+}
+
 export interface Order {
   creationTime: Date;
   deliveryTime: Date;

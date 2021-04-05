@@ -1,6 +1,6 @@
-import { updateMenu } from "./store";
-import { MenuCategoryData } from "../types";
 import firebase from "firebase";
+import { Address, MenuCategoryData, Order, OrderDraft, User } from "../types";
+import { updateMenu } from "./store";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBR3dh8ok7mxd4gqBIh4dw9BBYlUME7xBw",
@@ -20,14 +20,40 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 auth.languageCode = "it";
 
 export const fetchMenu = async () => {
-  try {
-    const firestore = firebase.firestore();
-    const data = await firestore.collection("menu").get();
+  const firestore = firebase.firestore();
+  const data = await firestore.collection("menu").get();
 
-    const menuData = data.docs.map((doc) => doc.data()) as MenuCategoryData[];
-    console.info("Fetched %s categories from firestore menu.", menuData.length);
-    updateMenu(menuData);
-  } catch (err) {
-    console.error("Error fetching Menu data %s", err);
+  const menuData = data.docs.map((doc) => doc.data()) as MenuCategoryData[];
+  console.info("Fetched %s categories from firestore menu.", menuData.length);
+  updateMenu(menuData);
+};
+
+export const getUserAddress = async (
+  user: firebase.User
+): Promise<Address | null> => {
+  const firestore = firebase.firestore();
+  const item = await firestore.collection("addresses").doc(user.uid).get();
+
+  if (item.exists) {
+    console.info("Got user address.");
+    const data = item.data() as User;
+    return data.address;
   }
+
+  console.info("No address found for this user.");
+  return null;
+};
+
+export const setUserAddress = async (user: firebase.User, address: Address) => {
+  const firestore = firebase.firestore();
+  await firestore.collection("addresses").doc(user.uid).set({ address });
+  console.log("Successfully created new address.");
+};
+
+export const putOrder = async (orderDraft: OrderDraft) => {
+  const order: Order = { ...orderDraft, creationTime: new Date() };
+
+  const firestore = firebase.firestore();
+  await firestore.collection("orders").doc().set(order);
+  console.log("Successfully created new order.");
 };

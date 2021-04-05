@@ -1,4 +1,9 @@
-import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createSlice,
+  PayloadAction,
+  SliceCaseReducers,
+} from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { CartData, CartItemData, MenuCategoryData } from "../types";
 
@@ -64,8 +69,27 @@ const menuSlice = createSlice({
   },
 });
 
+// --- USER ADDRESS --- //
+const addressInitialState: string | null = null;
+
+const addressSlice = createSlice<
+  string | null,
+  SliceCaseReducers<string | null>,
+  "userAddress"
+>({
+  name: "userAddress",
+  initialState: addressInitialState,
+  reducers: {
+    setAddress: (state, action: PayloadAction<string | null>) => action.payload,
+  },
+});
+
 const store = configureStore({
-  reducer: { cart: cartSlice.reducer, menu: menuSlice.reducer },
+  reducer: {
+    cart: cartSlice.reducer,
+    menu: menuSlice.reducer,
+    address: addressSlice.reducer,
+  },
 });
 
 export type AppState = ReturnType<typeof store.getState>;
@@ -92,3 +116,6 @@ export const cartItemTrash = (item: CartItemData) => {
 
 export const updateMenu = (menuData: MenuCategoryData[]) =>
   store.dispatch(menuSlice.actions.setMenu(menuData));
+
+export const updateAddress = (newAddress: string | null) =>
+  store.dispatch(addressSlice.actions.setAddress(newAddress));
