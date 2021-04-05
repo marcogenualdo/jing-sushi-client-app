@@ -7,6 +7,7 @@ import {
   IonList,
   IonToggle,
 } from "@ionic/react";
+import firebase from "firebase";
 import "firebaseui/dist/firebaseui.css";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -14,9 +15,8 @@ import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
 import { useAppSelector } from "../tools/store";
-import "./profile.css";
 import { Address } from "../types";
-import firebase from "firebase";
+import "./profile.css";
 
 export const SignIn: React.FC = () => (
   <div style={{ position: "relative" }}>
@@ -84,6 +84,7 @@ const SignedIn = () => {
         <IonInput
           value={defaultAddress}
           id="address-input"
+          type="text"
           placeholder="Non hai ancora inserito un indirizzo."
           onIonChange={(e) => setDefaultAddress(e.detail.value!)}
           disabled={!editAddress}

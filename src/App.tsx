@@ -31,7 +31,23 @@ import Profile from "./pages/profile";
 import "./theme/variables.css";
 import { fetchMenu } from "./tools/firestore";
 
-export const BottomNav: React.FC = () => (
+const App: React.FC = () => {
+  try {
+    fetchMenu();
+  } catch (err) {
+    console.error(err);
+  }
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <BottomNav />
+      </IonReactRouter>
+    </IonApp>
+  );
+};
+
+const BottomNav: React.FC = () => (
   <IonTabs>
     <IonRouterOutlet>
       <Redirect exact from="/" to="/info" />
@@ -62,21 +78,5 @@ export const BottomNav: React.FC = () => (
     </IonTabBar>
   </IonTabs>
 );
-
-const App: React.FC = () => {
-  try {
-    fetchMenu();
-  } catch (err) {
-    console.error(err);
-  }
-
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <BottomNav />
-      </IonReactRouter>
-    </IonApp>
-  );
-};
 
 export default App;
