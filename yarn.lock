@@ -2190,6 +2190,11 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/google.maps@^3.44.3":
+  version "3.44.3"
+  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.44.3.tgz#f0e1eb9f96576dd86ef06e885a04de4f1c7aa228"
+  integrity sha512-VsVQS3lvl/JFD1uGG0x3EVIbvmLQUEGuJNcd4sPXiPf6oHxUx2EJfQTqI+Liuhe9nLDl0e864NIq2K4WzfdcGQ==
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.5.tgz#21ffba0d98da4350db64891f92a9e5db3cdb4e15"

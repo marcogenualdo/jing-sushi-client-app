@@ -83,6 +83,7 @@ const SignedIn = () => {
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
         <IonInput
           value={defaultAddress}
+          id="address-input"
           placeholder="Non hai ancora inserito un indirizzo."
           onIonChange={(e) => setDefaultAddress(e.detail.value!)}
           disabled={!editAddress}
