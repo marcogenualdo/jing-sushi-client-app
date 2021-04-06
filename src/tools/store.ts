@@ -6,6 +6,8 @@ import {
 } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { CartData, CartItemData, MenuCategoryData } from "../types";
+import { getUserAddress } from "./firestore";
+import firebase from "firebase";
 
 /**
  * Adds a quantity to an item in the shopping cart.
@@ -119,3 +121,8 @@ export const updateMenu = (menuData: MenuCategoryData[]) =>
 
 export const updateAddress = (newAddress: string | null) =>
   store.dispatch(addressSlice.actions.setAddress(newAddress));
+
+export const fetchAddress = async (user: firebase.User) => {
+  const newAddress = await getUserAddress(user);
+  updateAddress(newAddress);
+};

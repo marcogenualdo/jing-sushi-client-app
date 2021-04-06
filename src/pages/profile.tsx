@@ -5,6 +5,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonToast,
   IonToggle,
 } from "@ionic/react";
 import "firebaseui/dist/firebaseui.css";
@@ -13,7 +14,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
-import { useAppSelector } from "../tools/store";
+import { fetchAddress, updateAddress, useAppSelector } from "../tools/store";
 import "./profile.css";
 import { Address } from "../types";
 import firebase from "firebase";
@@ -59,6 +60,7 @@ export const SignOut: React.FC = () => {
 const SignedIn = () => {
   const [user] = useAuthState(auth);
 
+  fetchAddress(user!);
   const currentAddress = useAppSelector((state) => state.address);
   const [editAddress, setEditAddress] = useState<boolean>(false);
   const [defaultAddress, setDefaultAddress] = useState<string | null>(
@@ -69,16 +71,53 @@ const SignedIn = () => {
     setEditAddress(!editAddress);
   };
 
-  const sendAddress = (
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showFailureToast, setShowFailureToast] = useState(false);
+  const [canSendAddress, setCanSendAddress] = useState(true);
+
+  const sendAddress = async (
     user: firebase.User | null | undefined,
     address: Address | null
   ) => {
-    if (!user || !address) return;
-    setUserAddress(user, address);
+    if (!user || !address) {
+      console.log("Could not send the address.");
+      return;
+    }
+    if (address === currentAddress) return;
+
+    setCanSendAddress(false);
+    try {
+      await setUserAddress(user, address);
+      setCanSendAddress(true);
+      setShowSuccessToast(true);
+      updateAddress(address);
+      setEditAddress(false);
+    } catch (err) {
+      console.error(err);
+      setShowFailureToast(true);
+      setTimeout(() => setCanSendAddress(true), 2000);
+    }
   };
 
   return (
     <IonList>
+      <IonToast
+        isOpen={showFailureToast}
+        onDidDismiss={() => setShowFailureToast(false)}
+        message="Si è verificato un errore."
+        color="danger"
+        position="top"
+        duration={1000}
+      />
+      <IonToast
+        isOpen={showSuccessToast}
+        onDidDismiss={() => setShowSuccessToast(false)}
+        message="Indirizzo salvato."
+        color="primary"
+        position="top"
+        duration={1000}
+      />
+
       <IonItem lines="none">
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
         <IonInput
@@ -88,7 +127,10 @@ const SignedIn = () => {
           disabled={!editAddress}
         />
         {editAddress && (
-          <IonButton onClick={() => sendAddress(user, defaultAddress)}>
+          <IonButton
+            onClick={() => sendAddress(user, defaultAddress)}
+            disabled={!canSendAddress}
+          >
             Conferma
           </IonButton>
         )}
@@ -116,9 +158,7 @@ const SignedIn = () => {
 const Profile: React.FC = () => {
   const [user] = useAuthState(auth);
 
-  return (
-    <Layout pageName="Profilo">{!user ? <SignedIn /> : <SignIn />}</Layout>
-  );
+  return <Layout pageName="Profilo">{user ? <SignedIn /> : <SignIn />}</Layout>;
 };
 
 export default Profile;
