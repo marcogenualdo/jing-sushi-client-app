@@ -56,6 +56,9 @@ const cartSlice = createSlice({
     ) => {
       return addToCartItemInner(state, action.payload.item, action.payload.n);
     },
+    emptyCart: () => {
+      return {};
+    },
   },
 });
 
@@ -114,6 +117,10 @@ export const cartItemTrash = (item: CartItemData) => {
   if (quantity) {
     store.dispatch(cartSlice.actions.addToCartItem({ item, n: -quantity }));
   }
+};
+
+export const emptyCart = () => {
+  store.dispatch(cartSlice.actions.emptyCart());
 };
 
 export const updateMenu = (menuData: MenuCategoryData[]) =>

@@ -20,6 +20,7 @@ import {
   IonSegmentButton,
   IonTextarea,
   IonTitle,
+  IonToast,
   IonToggle,
   IonToolbar,
 } from "@ionic/react";
@@ -30,13 +31,16 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import React, { useReducer, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
+import { auth, putOrder } from "../tools/firestore";
 import { useCartTotal } from "../tools/hooks";
 import {
   cartItemDecrement,
   cartItemIncrement,
   cartItemTrash,
+  emptyCart,
   useAppSelector,
 } from "../tools/store";
 import {
@@ -139,6 +143,8 @@ const OrderModal: React.FC<{
   isOpen: boolean;
   setIsOpen: (v: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
+  const [user] = useAuthState(auth);
+
   const cartData = useAppSelector((state) => state.cart);
   const userAddress = useAppSelector((state) => state.address);
   const orderTotal = useCartTotal();
@@ -151,14 +157,52 @@ const OrderModal: React.FC<{
     deliveryAddress: userAddress!,
     plates: Object.values(cartData),
     deliveryTime: new Date(),
-    userId: "",
+    userId: user!.uid,
   });
 
   const [editAddress, setEditAddress] = useState(false);
   const toggleAddress = () => setEditAddress(!editAddress);
 
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showFailureToast, setShowFailureToast] = useState(false);
+
+  const [canSendOrder, setCanSendOrder] = useState(true);
+  const sendOrder = async () => {
+    try {
+      setCanSendOrder(false);
+      await putOrder(orderData);
+
+      setShowSuccessToast(true);
+      emptyCart();
+      setCanSendOrder(true);
+      setEditAddress(false);
+      setIsOpen(false);
+    } catch (err) {
+      console.error(err);
+      setShowFailureToast(true);
+      setTimeout(() => setCanSendOrder(true), 2000);
+    }
+  };
+
   return (
     <IonModal isOpen={isOpen}>
+      <IonToast
+        isOpen={showFailureToast}
+        onDidDismiss={() => setShowFailureToast(false)}
+        message="Si è verificato un errore nell'invio dell'ordine."
+        color="danger"
+        position="top"
+        duration={1000}
+      />
+      <IonToast
+        isOpen={showSuccessToast}
+        onDidDismiss={() => setShowSuccessToast(false)}
+        message="Ordine inviato con successo."
+        color="primary"
+        position="top"
+        duration={1000}
+      />
+
       <IonHeader>
         <IonToolbar>
           <IonTitle>Ordine</IonTitle>
@@ -240,6 +284,7 @@ const OrderModal: React.FC<{
                 <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
                 <IonInput
                   value={orderData.deliveryAddress}
+                  placeholder="Nuovo indirizzo..."
                   onIonChange={(e) =>
                     dispatchOrderData({
                       type: "deliveryAddress",
@@ -257,6 +302,10 @@ const OrderModal: React.FC<{
                   <IonToggle
                     checked={editAddress}
                     onIonChange={(e) => {
+                      dispatchOrderData({
+                        type: "deliveryAddress",
+                        value: e.detail.checked ? "" : userAddress!,
+                      });
                       toggleAddress();
                     }}
                     color="primary"
@@ -290,7 +339,12 @@ const OrderModal: React.FC<{
               }
             ></IonTextarea>
           </IonItem>
-          <IonButton expand="block" style={{ padding: "0 1rem" }}>
+          <IonButton
+            expand="block"
+            style={{ padding: "0 1rem" }}
+            disabled={!canSendOrder}
+            onClick={sendOrder}
+          >
             Invia Ordine
           </IonButton>
         </IonList>
