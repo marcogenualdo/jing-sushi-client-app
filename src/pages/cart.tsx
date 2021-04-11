@@ -29,7 +29,7 @@ import {
   sendOutline,
   trashOutline,
 } from "ionicons/icons";
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
 import { useCartTotal } from "../tools/hooks";
@@ -128,19 +128,27 @@ const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
   );
 };
 
+const orderDraftReducer = <K extends keyof OrderDraft>(
+  state: OrderDraft,
+  action: { type: K; value: OrderDraft[K] }
+) => {
+  return { ...state, [action.type]: action.value };
+};
+
 const OrderModal: React.FC<{
   isOpen: boolean;
   setIsOpen: (v: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
   const cartData = useAppSelector((state) => state.cart);
+  const userAddress = useAppSelector((state) => state.address);
   const orderTotal = useCartTotal();
 
-  const [orderData, setOrderData] = useState<OrderDraft>({
+  const [orderData, dispatchOrderData] = useReducer(orderDraftReducer, {
     type: OrderType.Delivery,
     paymentType: PaymentType.Cash,
     status: OrderStatus.Pending,
     notes: "",
-    deliveryAddress: "Indirizzo di prova, 00126, Roma",
+    deliveryAddress: userAddress!,
     plates: Object.values(cartData),
     deliveryTime: new Date(),
     userId: "",
@@ -174,9 +182,9 @@ const OrderModal: React.FC<{
             <IonSegment
               value={orderData.paymentType}
               onIonChange={(e) =>
-                setOrderData({
-                  ...orderData,
-                  paymentType: e.detail.value as PaymentType,
+                dispatchOrderData({
+                  type: "paymentType",
+                  value: e.detail.value as PaymentType,
                 })
               }
             >
@@ -196,9 +204,9 @@ const OrderModal: React.FC<{
             <IonSegment
               value={orderData.type}
               onIonChange={(e) =>
-                setOrderData({
-                  ...orderData,
-                  type: e.detail.value as OrderType,
+                dispatchOrderData({
+                  type: "type",
+                  value: e.detail.value as OrderType,
                 })
               }
             >
@@ -219,9 +227,9 @@ const OrderModal: React.FC<{
               displayFormat="HH:mm"
               value={orderData.deliveryTime.toString()}
               onIonChange={(e) =>
-                setOrderData({
-                  ...orderData,
-                  deliveryTime: new Date(e.detail.value!),
+                dispatchOrderData({
+                  type: "deliveryTime",
+                  value: new Date(e.detail.value!),
                 })
               }
             ></IonDatetime>
@@ -233,9 +241,9 @@ const OrderModal: React.FC<{
                 <IonInput
                   value={orderData.deliveryAddress}
                   onIonChange={(e) =>
-                    setOrderData({
-                      ...orderData,
-                      deliveryAddress: e.detail.value!,
+                    dispatchOrderData({
+                      type: "deliveryAddress",
+                      value: e.detail.value!,
                     })
                   }
                   disabled={!editAddress}
@@ -248,7 +256,9 @@ const OrderModal: React.FC<{
                   </IonLabel>
                   <IonToggle
                     checked={editAddress}
-                    onIonChange={toggleAddress}
+                    onIonChange={(e) => {
+                      toggleAddress();
+                    }}
                     color="primary"
                   />
                 </IonItem>
@@ -273,7 +283,10 @@ const OrderModal: React.FC<{
               cols={20}
               placeholder="Scrivi qui..."
               onIonChange={(e) =>
-                setOrderData({ ...orderData, notes: e.detail.value! })
+                dispatchOrderData({
+                  type: "notes",
+                  value: e.detail.value!,
+                })
               }
             ></IonTextarea>
           </IonItem>
