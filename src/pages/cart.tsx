@@ -244,7 +244,7 @@ const OrderModal: React.FC<{
               <IonItem lines="none">
                 <IonItem>
                   <IonLabel style={{ whiteSpace: "break-spaces" }}>
-                    Utilizza un altro indirizzo per questo ordine
+                    Usa un altro indirizzo per questo ordine
                   </IonLabel>
                   <IonToggle
                     checked={editAddress}

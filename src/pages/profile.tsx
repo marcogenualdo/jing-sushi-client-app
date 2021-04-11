@@ -14,7 +14,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
-import { fetchAddress, updateAddress, useAppSelector } from "../tools/store";
+import { updateAddress, useAppSelector } from "../tools/store";
 import "./profile.css";
 import { Address } from "../types";
 import firebase from "firebase";
@@ -60,14 +60,13 @@ export const SignOut: React.FC = () => {
 const SignedIn = () => {
   const [user] = useAuthState(auth);
 
-  fetchAddress(user!);
   const currentAddress = useAppSelector((state) => state.address);
   const [editAddress, setEditAddress] = useState<boolean>(false);
-  const [defaultAddress, setDefaultAddress] = useState<string | null>(
+  const [editedAddress, setEditedAddress] = useState<string | null>(
     currentAddress
   );
   const toggleAddress = () => {
-    if (editAddress) setDefaultAddress(currentAddress);
+    if (editAddress) setEditedAddress(currentAddress);
     setEditAddress(!editAddress);
   };
 
@@ -80,7 +79,9 @@ const SignedIn = () => {
     address: Address | null
   ) => {
     if (!user || !address) {
-      console.log("Could not send the address.");
+      console.warn(
+        "Could not send the address, no user/address data provided."
+      );
       return;
     }
     if (address === currentAddress) return;
@@ -121,14 +122,16 @@ const SignedIn = () => {
       <IonItem lines="none">
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
         <IonInput
-          value={defaultAddress}
-          placeholder="Non hai ancora inserito un indirizzo."
-          onIonChange={(e) => setDefaultAddress(e.detail.value!)}
+          value={editedAddress}
+          placeholder={
+            currentAddress ?? "Non hai ancora inserito un indirizzo."
+          }
+          onIonChange={(e) => setEditedAddress(e.detail.value!)}
           disabled={!editAddress}
         />
         {editAddress && (
           <IonButton
-            onClick={() => sendAddress(user, defaultAddress)}
+            onClick={() => sendAddress(user, editedAddress)}
             disabled={!canSendAddress}
           >
             Conferma
