@@ -342,7 +342,7 @@ const OrderModal: React.FC<{
           <IonButton
             expand="block"
             style={{ padding: "0 1rem" }}
-            disabled={!canSendOrder}
+            disabled={Object.keys(cartData).length === 0 || !canSendOrder}
             onClick={sendOrder}
           >
             Invia Ordine
