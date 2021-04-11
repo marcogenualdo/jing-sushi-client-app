@@ -101,7 +101,12 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
     <Layout pageName="Menù">
       <IonList>
         {menuData.map(({ name }, index) => (
-          <IonItem detail routerLink={`/menu/${index}`} className="menu-item">
+          <IonItem
+            detail
+            routerLink={`/menu/${index}`}
+            className="menu-item"
+            key={index}
+          >
             <IonAvatar slot="start">
               <IonImg src={defaultImage} alt="null" />
             </IonAvatar>

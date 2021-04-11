@@ -58,6 +58,7 @@ export const SignOut: React.FC = () => {
 };
 
 const SignedIn = () => {
+  // address data
   const [user] = useAuthState(auth);
 
   const currentAddress = useAppSelector((state) => state.address);
@@ -70,6 +71,7 @@ const SignedIn = () => {
     setEditAddress(!editAddress);
   };
 
+  // UI state
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showFailureToast, setShowFailureToast] = useState(false);
   const [canSendAddress, setCanSendAddress] = useState(true);

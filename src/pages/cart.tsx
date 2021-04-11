@@ -30,7 +30,7 @@ import {
   sendOutline,
   trashOutline,
 } from "ionicons/icons";
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
@@ -143,6 +143,7 @@ const OrderModal: React.FC<{
   isOpen: boolean;
   setIsOpen: (v: boolean) => void;
 }> = ({ isOpen, setIsOpen }) => {
+  // order data
   const [user] = useAuthState(auth);
 
   const cartData = useAppSelector((state) => state.cart);
@@ -154,12 +155,16 @@ const OrderModal: React.FC<{
     paymentType: PaymentType.Cash,
     status: OrderStatus.Pending,
     notes: "",
-    deliveryAddress: userAddress!,
+    deliveryAddress: userAddress,
     plates: Object.values(cartData),
     deliveryTime: new Date(),
     userId: user!.uid,
   });
+  useEffect(() => {
+    dispatchOrderData({ type: "plates", value: Object.values(cartData) });
+  }, [cartData]);
 
+  // UI state
   const [editAddress, setEditAddress] = useState(false);
   const toggleAddress = () => setEditAddress(!editAddress);
 
@@ -170,16 +175,26 @@ const OrderModal: React.FC<{
   const sendOrder = async () => {
     try {
       setCanSendOrder(false);
+
       await putOrder(orderData);
 
+      // UI feedback
       setShowSuccessToast(true);
+
+      // resetting order data
       emptyCart();
+      dispatchOrderData({ type: "notes", value: "" });
+
+      // resetting UI
       setCanSendOrder(true);
       setEditAddress(false);
       setIsOpen(false);
     } catch (err) {
       console.error(err);
+      // UI feedback
       setShowFailureToast(true);
+
+      // prevent user from spamming the send button
       setTimeout(() => setCanSendOrder(true), 2000);
     }
   };
@@ -247,12 +262,17 @@ const OrderModal: React.FC<{
           <IonItem>
             <IonSegment
               value={orderData.type}
-              onIonChange={(e) =>
+              onIonChange={(e) => {
+                const value = e.detail.value as OrderType;
                 dispatchOrderData({
                   type: "type",
-                  value: e.detail.value as OrderType,
-                })
-              }
+                  value,
+                });
+                dispatchOrderData({
+                  type: "deliveryAddress",
+                  value: value === OrderType.Delivery ? userAddress : null,
+                });
+              }}
             >
               <IonSegmentButton value={OrderType.Delivery}>
                 Consegna
@@ -331,6 +351,7 @@ const OrderModal: React.FC<{
               rows={6}
               cols={20}
               placeholder="Scrivi qui..."
+              value={orderData.notes}
               onIonChange={(e) =>
                 dispatchOrderData({
                   type: "notes",

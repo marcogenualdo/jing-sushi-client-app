@@ -46,7 +46,7 @@ export interface User {
 export interface Order {
   creationTime: Date;
   deliveryTime: Date;
-  deliveryAddress: Address;
+  deliveryAddress: Address | null;
   plates: CartItemData[];
   type: OrderType;
   status: OrderStatus;
