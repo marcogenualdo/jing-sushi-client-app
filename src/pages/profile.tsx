@@ -5,12 +5,13 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonSearchbar,
   IonToast,
   IonToggle,
 } from "@ionic/react";
 import firebase from "firebase";
 import "firebaseui/dist/firebaseui.css";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
@@ -19,6 +20,7 @@ import { updateAddress, useAppSelector } from "../tools/store";
 import "./profile.css";
 import { Address } from "../types";
 import "./profile.css";
+import { getPlaceAutocomplete } from "../tools/gmaps";
 
 export const SignIn: React.FC = () => (
   <div style={{ position: "relative" }}>
@@ -103,6 +105,17 @@ const SignedIn = () => {
     }
   };
 
+  const autocomplete = useRef<null | google.maps.places.Autocomplete>(null);
+  const handlePlaceSelect = () => {
+    if (autocomplete.current === null) return;
+    const addr = autocomplete.current.getPlace();
+    console.log(addr);
+  };
+
+  useEffect(() => {
+    autocomplete.current = getPlaceAutocomplete(handlePlaceSelect);
+  }, []);
+
   return (
     <IonList>
       <IonToast
@@ -124,8 +137,9 @@ const SignedIn = () => {
 
       <IonItem lines="none">
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
-        <IonInput
-          value={editedAddress}
+        <IonSearchbar
+          id="address-input"
+          value={editedAddress ?? ""}
           placeholder={
             currentAddress ?? "Non hai ancora inserito un indirizzo."
           }
