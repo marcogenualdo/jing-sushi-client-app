@@ -22,6 +22,8 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/typography.css";
 import { cart, informationCircle, map, personCircle } from "ionicons/icons";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Redirect, Route } from "react-router-dom";
 import { Cart } from "./pages/cart";
 import Info from "./pages/info";
@@ -29,23 +31,8 @@ import { CategoryDetail, MenuCategories } from "./pages/menu";
 import Profile from "./pages/profile";
 /* Theme variables */
 import "./theme/variables.css";
-import { fetchMenu } from "./tools/firestore";
-
-const App: React.FC = () => {
-  try {
-    fetchMenu();
-  } catch (err) {
-    console.error(err);
-  }
-
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <BottomNav />
-      </IonReactRouter>
-    </IonApp>
-  );
-};
+import { auth, fetchMenu } from "./tools/firestore";
+import { fetchAddress } from "./tools/store";
 
 const BottomNav: React.FC = () => (
   <IonTabs>
@@ -78,5 +65,26 @@ const BottomNav: React.FC = () => (
     </IonTabBar>
   </IonTabs>
 );
+
+const App: React.FC = () => {
+  const [user] = useAuthState(auth);
+
+  useEffect(() => {
+    if (user != null) fetchAddress(user);
+  }, [user]);
+  try {
+    fetchMenu();
+  } catch (err) {
+    console.error(err);
+  }
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <BottomNav />
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

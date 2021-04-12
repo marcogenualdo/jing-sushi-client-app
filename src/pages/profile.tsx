@@ -5,6 +5,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonToast,
   IonToggle,
 } from "@ionic/react";
 import firebase from "firebase";
@@ -14,7 +15,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
-import { useAppSelector } from "../tools/store";
+import { updateAddress, useAppSelector } from "../tools/store";
+import "./profile.css";
 import { Address } from "../types";
 import "./profile.css";
 
@@ -57,40 +59,84 @@ export const SignOut: React.FC = () => {
 };
 
 const SignedIn = () => {
+  // address data
   const [user] = useAuthState(auth);
 
   const currentAddress = useAppSelector((state) => state.address);
   const [editAddress, setEditAddress] = useState<boolean>(false);
-  const [defaultAddress, setDefaultAddress] = useState<string | null>(
+  const [editedAddress, setEditedAddress] = useState<string | null>(
     currentAddress
   );
   const toggleAddress = () => {
-    if (editAddress) setDefaultAddress(currentAddress);
+    if (editAddress) setEditedAddress(currentAddress);
     setEditAddress(!editAddress);
   };
 
-  const sendAddress = (
+  // UI state
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showFailureToast, setShowFailureToast] = useState(false);
+  const [canSendAddress, setCanSendAddress] = useState(true);
+
+  const sendAddress = async (
     user: firebase.User | null | undefined,
     address: Address | null
   ) => {
-    if (!user || !address) return;
-    setUserAddress(user, address);
+    if (!user || !address) {
+      console.warn(
+        "Could not send the address, no user/address data provided."
+      );
+      return;
+    }
+    if (address === currentAddress) return;
+
+    setCanSendAddress(false);
+    try {
+      await setUserAddress(user, address);
+      setCanSendAddress(true);
+      setShowSuccessToast(true);
+      updateAddress(address);
+      setEditAddress(false);
+    } catch (err) {
+      console.error(err);
+      setShowFailureToast(true);
+      setTimeout(() => setCanSendAddress(true), 2000);
+    }
   };
 
   return (
     <IonList>
+      <IonToast
+        isOpen={showFailureToast}
+        onDidDismiss={() => setShowFailureToast(false)}
+        message="Si è verificato un errore."
+        color="danger"
+        position="top"
+        duration={1000}
+      />
+      <IonToast
+        isOpen={showSuccessToast}
+        onDidDismiss={() => setShowSuccessToast(false)}
+        message="Indirizzo salvato."
+        color="primary"
+        position="top"
+        duration={1000}
+      />
+
       <IonItem lines="none">
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
         <IonInput
-          value={defaultAddress}
-          id="address-input"
-          type="text"
-          placeholder="Non hai ancora inserito un indirizzo."
-          onIonChange={(e) => setDefaultAddress(e.detail.value!)}
+          value={editedAddress}
+          placeholder={
+            currentAddress ?? "Non hai ancora inserito un indirizzo."
+          }
+          onIonChange={(e) => setEditedAddress(e.detail.value!)}
           disabled={!editAddress}
         />
         {editAddress && (
-          <IonButton onClick={() => sendAddress(user, defaultAddress)}>
+          <IonButton
+            onClick={() => sendAddress(user, editedAddress)}
+            disabled={!canSendAddress}
+          >
             Conferma
           </IonButton>
         )}
@@ -118,9 +164,7 @@ const SignedIn = () => {
 const Profile: React.FC = () => {
   const [user] = useAuthState(auth);
 
-  return (
-    <Layout pageName="Profilo">{!user ? <SignedIn /> : <SignIn />}</Layout>
-  );
+  return <Layout pageName="Profilo">{user ? <SignedIn /> : <SignIn />}</Layout>;
 };
 
 export default Profile;
