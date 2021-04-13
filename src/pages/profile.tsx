@@ -21,6 +21,7 @@ import "./profile.css";
 import { Address } from "../types";
 import "./profile.css";
 import { getPlaceAutocomplete } from "../tools/gmaps";
+import AddressAutocomplete from "../components/AddressAutocomplete";
 
 export const SignIn: React.FC = () => (
   <div style={{ position: "relative" }}>
@@ -65,13 +66,13 @@ const SignedIn = () => {
   const [user] = useAuthState(auth);
 
   const currentAddress = useAppSelector((state) => state.address);
-  const [editAddress, setEditAddress] = useState<boolean>(false);
+  const [canEditAddress, setCanEditAddress] = useState<boolean>(false);
   const [editedAddress, setEditedAddress] = useState<string | null>(
     currentAddress
   );
   const toggleAddress = () => {
-    if (editAddress) setEditedAddress(currentAddress);
-    setEditAddress(!editAddress);
+    if (canEditAddress) setEditedAddress(currentAddress);
+    setCanEditAddress(!canEditAddress);
   };
 
   // UI state
@@ -97,24 +98,13 @@ const SignedIn = () => {
       setCanSendAddress(true);
       setShowSuccessToast(true);
       updateAddress(address);
-      setEditAddress(false);
+      setCanEditAddress(false);
     } catch (err) {
       console.error(err);
       setShowFailureToast(true);
       setTimeout(() => setCanSendAddress(true), 2000);
     }
   };
-
-  const autocomplete = useRef<null | google.maps.places.Autocomplete>(null);
-  const handlePlaceSelect = () => {
-    if (autocomplete.current === null) return;
-    const addr = autocomplete.current.getPlace();
-    console.log(addr);
-  };
-
-  useEffect(() => {
-    autocomplete.current = getPlaceAutocomplete(handlePlaceSelect);
-  }, []);
 
   return (
     <IonList>
@@ -137,16 +127,12 @@ const SignedIn = () => {
 
       <IonItem lines="none">
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
-        <IonSearchbar
-          id="address-input"
-          value={editedAddress ?? ""}
-          placeholder={
-            currentAddress ?? "Non hai ancora inserito un indirizzo."
-          }
-          onIonChange={(e) => setEditedAddress(e.detail.value!)}
-          disabled={!editAddress}
+        <AddressAutocomplete
+          address={editedAddress}
+          setAddress={setEditedAddress}
+          canEditAddress={canEditAddress}
         />
-        {editAddress && (
+        {canEditAddress && (
           <IonButton
             onClick={() => sendAddress(user, editedAddress)}
             disabled={!canSendAddress}
@@ -166,7 +152,7 @@ const SignedIn = () => {
           Modifica indirizzo di default.
         </IonLabel>
         <IonToggle
-          checked={editAddress}
+          checked={canEditAddress}
           onIonChange={toggleAddress}
           color="primary"
         />
