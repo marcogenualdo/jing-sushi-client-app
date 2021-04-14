@@ -6,7 +6,6 @@ import {
   IonList,
   IonToggle,
 } from "@ionic/react";
-import "firebaseui/dist/firebaseui.css";
 import React, { useEffect, useState } from "react";
 import { Address } from "../types";
 import "../pages/profile.css";

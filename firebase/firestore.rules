@@ -4,5 +4,24 @@ service cloud.firestore {
     match /menu/{document=**} {
       allow read;
     }
+
+    match /zipCodes/{document=**} {
+      allow read;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    match /users/{user} {
+      allow create, update: if isSignedIn() && request.resource.id == request.auth.uid;
+      allow get: if isSignedIn() && resource.id == request.auth.uid;
+    }
+
+	match /orders/{order} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
   }
 }
+

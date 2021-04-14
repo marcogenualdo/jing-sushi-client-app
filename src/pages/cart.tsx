@@ -53,6 +53,7 @@ import {
 import "./cart.css";
 
 export const Cart: React.FC = () => {
+  const [user] = useAuthState(auth);
   const cartData = useAppSelector((state) => state.cart);
   const [showOrderModal, setShowOrderModal] = useState(false);
 
@@ -76,17 +77,24 @@ export const Cart: React.FC = () => {
             <li>Una birra in omaggio per oridini superiori a 30€</li>
           </ul>
         </IonItem>
+        {!user && (
+          <IonLabel color="danger" style={{ padding: "2rem" }}>
+            Registrati per effetturare un ordine.
+          </IonLabel>
+        )}
       </IonList>
-      <IonFab
-        vertical="bottom"
-        horizontal="start"
-        slot="fixed"
-        onClick={() => setShowOrderModal(true)}
-      >
-        <IonFabButton>
-          <IonIcon icon={sendOutline} />
-        </IonFabButton>
-      </IonFab>
+      {user && (
+        <IonFab
+          vertical="bottom"
+          horizontal="start"
+          slot="fixed"
+          onClick={() => setShowOrderModal(true)}
+        >
+          <IonFabButton>
+            <IonIcon icon={sendOutline} />
+          </IonFabButton>
+        </IonFab>
+      )}
       <OrderModal isOpen={showOrderModal} setIsOpen={setShowOrderModal} />
     </Layout>
   );
@@ -159,7 +167,7 @@ const OrderModal: React.FC<{
     deliveryAddress: userAddress,
     plates: Object.values(cartData),
     deliveryTime: new Date(),
-    userId: user!.uid,
+    userId: user?.uid ?? "",
   });
   useEffect(() => {
     dispatchOrderData({ type: "plates", value: Object.values(cartData) });
@@ -346,13 +354,13 @@ const OrderModal: React.FC<{
           </IonItem>
           {!minOrderOk && (
             <IonItem>
-              <IonLabel color="danger">
+              <p style={{ color: "#ff0000" }}>
                 {zipOk
                   ? `L'ordine minimo per questo CAP è ${
                       zipCodes![orderData.deliveryAddress?.zip!]
                     } €`
                   : "Siamo spiacenti. Non consegnamo in questo CAP."}
-              </IonLabel>
+              </p>
             </IonItem>
           )}
           <IonButton

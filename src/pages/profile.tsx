@@ -36,7 +36,6 @@ export const SignOut: React.FC = () => {
       </IonButton>
       <IonAlert
         isOpen={showSignOutAlert}
-        onDidDismiss={() => setShowSignOutAlert(false)}
         header={"Logout"}
         subHeader={"Sei sicuro di voler uscire dal tuo account?"}
         buttons={[
@@ -104,10 +103,13 @@ const SignedIn = () => {
         toggleLabel="Modifica indirizzo di default."
       />
 
-      <p className="asterisk-note">
-        Aggiungendo un indirizzo predefinito non dovrai inserirlo ogni volta nel
-        form di ordinazione.
-      </p>
+      {!currentAddress?.address && (
+        <p className="asterisk-note">
+          Aggiungendo un indirizzo predefinito non dovrai inserirlo ogni volta
+          nel form di ordinazione.
+        </p>
+      )}
+      <SignOut />
     </>
   );
 };
