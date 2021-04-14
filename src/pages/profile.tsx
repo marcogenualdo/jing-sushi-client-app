@@ -1,27 +1,23 @@
 import {
   IonAlert,
   IonButton,
-  IonInput,
   IonItem,
   IonLabel,
   IonList,
-  IonSearchbar,
   IonToast,
   IonToggle,
 } from "@ionic/react";
 import firebase from "firebase";
 import "firebaseui/dist/firebaseui.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import AddressAutocomplete from "../components/AddressAutocomplete";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
 import { updateAddress, useAppSelector } from "../tools/store";
-import "./profile.css";
 import { Address } from "../types";
 import "./profile.css";
-import { getPlaceAutocomplete } from "../tools/gmaps";
-import AddressAutocomplete from "../components/AddressAutocomplete";
 
 export const SignIn: React.FC = () => (
   <div style={{ position: "relative" }}>
@@ -128,6 +124,7 @@ const SignedIn = () => {
       <IonItem lines="none">
         <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
         <AddressAutocomplete
+          oldAddress={currentAddress}
           address={editedAddress}
           setAddress={setEditedAddress}
           canEditAddress={canEditAddress}
@@ -147,6 +144,7 @@ const SignedIn = () => {
           </p>
         )}
       </IonItem>
+
       <IonItem>
         <IonLabel style={{ whiteSpace: "break-spaces" }}>
           Modifica indirizzo di default.

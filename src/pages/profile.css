@@ -6,3 +6,11 @@
   font-size: 0.8rem;
   color: #808080;
 }
+
+.suggestion {
+  background-color: var(--ion-background-color) !important;
+}
+
+.suggestion .item-native {
+  background-color: var(--ion-background-color);
+}

@@ -1,12 +1,14 @@
-import { IonItem, IonList, IonPopover, IonSearchbar } from "@ionic/react";
+import { IonItem, IonList, IonSearchbar } from "@ionic/react";
 import React, { useEffect, useRef, useState } from "react";
+import "../pages/profile.css";
 import { Address } from "../types";
 
 const AddressAutocomplete: React.FC<{
+  oldAddress: Address | null;
   address: Address | null;
   setAddress: (e: string) => void;
   canEditAddress: boolean;
-}> = ({ address, setAddress, canEditAddress }) => {
+}> = ({ oldAddress, address, setAddress, canEditAddress }) => {
   const autocomplete = useRef<null | google.maps.places.AutocompleteService>(
     null
   );
@@ -14,7 +16,10 @@ const AddressAutocomplete: React.FC<{
     autocomplete.current = new google.maps.places.AutocompleteService();
   }, []);
 
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [suggestions, setSuggestions] = useState<
+    google.maps.places.QueryAutocompletePrediction[]
+  >([]);
   const putSuggestions = function (
     predictions: google.maps.places.QueryAutocompletePrediction[] | null,
     status: google.maps.places.PlacesServiceStatus
@@ -24,42 +29,43 @@ const AddressAutocomplete: React.FC<{
       return;
     }
 
-    const newPredictions = predictions.map(
-      (prediction) => prediction.description
-    );
-    setSuggestions(newPredictions);
+    setSuggestions(predictions);
   };
   useEffect(() => {
-    if (!address) return;
+    if (!address || !showSuggestions) return;
     autocomplete.current?.getPlacePredictions(
       { input: address },
       putSuggestions
     );
-  }, [address]);
+  }, [address, showSuggestions]);
 
   return (
     <>
       <IonSearchbar
         id="address-input"
         value={address ?? ""}
-        placeholder={address ?? "Non hai ancora inserito un indirizzo."}
+        placeholder={oldAddress ?? "Non hai ancora inserito un indirizzo."}
         onIonChange={(e) => {
           setAddress(e.detail.value!);
         }}
         onReset={() => setAddress("")}
         disabled={!canEditAddress}
+        onFocus={() => setShowSuggestions(true)}
       />
-      {suggestions && (
+      {showSuggestions && canEditAddress && (
         <IonList>
           {suggestions.map((item, index) => (
             <IonItem
               key={index}
               onClick={() => {
-                setAddress(item);
-                setSuggestions([]);
+                console.log(item);
+
+                setAddress(item.description);
+                setShowSuggestions(false);
               }}
+              className="suggestion"
             >
-              {item}
+              {item.description}
             </IonItem>
           ))}
         </IonList>
