@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonImg,
   IonItem,
+  IonItemDivider,
   IonLabel,
   IonList,
   IonNote,
@@ -85,10 +86,11 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
 
       <IonContent fullscreen>
         <IonList>
-          {categoryData.dishes.map((item) => (
-            <MenuItem item={item} />
+          {categoryData.dishes.map((item, index) => (
+            <MenuItem item={item} key={index} />
           ))}
         </IonList>
+        <IonItemDivider style={{ border: "0px" }} />
       </IonContent>
     </IonPage>
   );
@@ -116,6 +118,7 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
           </IonItem>
         ))}
       </IonList>
+      <IonItemDivider style={{ border: "0px" }} />
     </Layout>
   );
 };

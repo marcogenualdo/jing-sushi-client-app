@@ -180,6 +180,8 @@ const OrderModal: React.FC<{
   const [canSendOrder, setCanSendOrder] = useState(true);
   const sendOrder = async () => {
     try {
+      if (!user) throw Error("User is not logged in.");
+
       setCanSendOrder(false);
 
       await putOrder(orderData);
@@ -352,7 +354,7 @@ const OrderModal: React.FC<{
               }
             ></IonTextarea>
           </IonItem>
-          {!minOrderOk && (
+          {orderData.type === OrderType.Delivery && !minOrderOk && (
             <IonItem>
               <p style={{ color: "#ff0000" }}>
                 {zipOk
@@ -366,7 +368,10 @@ const OrderModal: React.FC<{
           <IonButton
             expand="block"
             style={{ padding: "0 1rem" }}
-            disabled={!canSendOrder || !zipOk || !minOrderOk}
+            disabled={
+              !canSendOrder ||
+              (orderData.type === OrderType.Delivery && (!zipOk || !minOrderOk))
+            }
             onClick={sendOrder}
           >
             Invia Ordine
