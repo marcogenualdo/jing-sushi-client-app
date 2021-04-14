@@ -37,7 +37,10 @@ export enum PaymentType {
   Pos = "POS",
 }
 
-export type Address = string;
+export interface Address {
+  address: string;
+  zip: string;
+}
 
 export interface User {
   address: Address;

@@ -9,7 +9,7 @@ import {
   IonToggle,
 } from "@ionic/react";
 import "firebaseui/dist/firebaseui.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
@@ -18,6 +18,7 @@ import { updateAddress, useAppSelector } from "../tools/store";
 import "./profile.css";
 import { Address } from "../types";
 import firebase from "firebase";
+import AddressEditor from "../components/AddressEditor";
 
 export const SignIn: React.FC = () => (
   <div style={{ position: "relative" }}>
@@ -58,35 +59,20 @@ export const SignOut: React.FC = () => {
 };
 
 const SignedIn = () => {
-  // address data
   const [user] = useAuthState(auth);
-
-  const currentAddress = useAppSelector((state) => state.address);
-  const [editAddress, setEditAddress] = useState<boolean>(false);
-  const [editedAddress, setEditedAddress] = useState<string | null>(
-    currentAddress
-  );
-  const toggleAddress = () => {
-    if (editAddress) setEditedAddress(currentAddress);
-    setEditAddress(!editAddress);
-  };
 
   // UI state
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showFailureToast, setShowFailureToast] = useState(false);
   const [canSendAddress, setCanSendAddress] = useState(true);
 
-  const sendAddress = async (
-    user: firebase.User | null | undefined,
-    address: Address | null
-  ) => {
+  const sendAddress = async (address: Address | null) => {
     if (!user || !address) {
       console.warn(
         "Could not send the address, no user/address data provided."
       );
       return;
     }
-    if (address === currentAddress) return;
 
     setCanSendAddress(false);
     try {
@@ -94,7 +80,6 @@ const SignedIn = () => {
       setCanSendAddress(true);
       setShowSuccessToast(true);
       updateAddress(address);
-      setEditAddress(false);
     } catch (err) {
       console.error(err);
       setShowFailureToast(true);
@@ -103,7 +88,7 @@ const SignedIn = () => {
   };
 
   return (
-    <IonList>
+    <>
       <IonToast
         isOpen={showFailureToast}
         onDidDismiss={() => setShowFailureToast(false)}
@@ -120,43 +105,17 @@ const SignedIn = () => {
         position="top"
         duration={1000}
       />
+      <AddressEditor
+        canConfirm={canSendAddress}
+        onConfirm={sendAddress}
+        toggleLabel="Modifica indirizzo di default."
+      />
 
-      <IonItem lines="none">
-        <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
-        <IonInput
-          value={editedAddress}
-          placeholder={
-            currentAddress ?? "Non hai ancora inserito un indirizzo."
-          }
-          onIonChange={(e) => setEditedAddress(e.detail.value!)}
-          disabled={!editAddress}
-        />
-        {editAddress && (
-          <IonButton
-            onClick={() => sendAddress(user, editedAddress)}
-            disabled={!canSendAddress}
-          >
-            Conferma
-          </IonButton>
-        )}
-        {currentAddress === null && (
-          <p className="asterisk-note">
-            Aggiungendo un indirizzo predefinito non dovrai inserirlo ogni volta
-            nel form di ordinazione.
-          </p>
-        )}
-      </IonItem>
-      <IonItem>
-        <IonLabel style={{ whiteSpace: "break-spaces" }}>
-          Modifica indirizzo di default.
-        </IonLabel>
-        <IonToggle
-          checked={editAddress}
-          onIonChange={toggleAddress}
-          color="primary"
-        />
-      </IonItem>
-    </IonList>
+      <p className="asterisk-note">
+        Aggiungendo un indirizzo predefinito non dovrai inserirlo ogni volta nel
+        form di ordinazione.
+      </p>
+    </>
   );
 };
 

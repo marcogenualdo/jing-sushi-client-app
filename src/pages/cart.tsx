@@ -303,7 +303,7 @@ const OrderModal: React.FC<{
               <IonItem lines="none">
                 <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
                 <IonInput
-                  value={orderData.deliveryAddress}
+                  value={orderData.deliveryAddress?.address}
                   placeholder="Nuovo indirizzo..."
                   onIonChange={(e) =>
                     dispatchOrderData({

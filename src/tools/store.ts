@@ -5,7 +5,7 @@ import {
   SliceCaseReducers,
 } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { CartData, CartItemData, MenuCategoryData } from "../types";
+import { Address, CartData, CartItemData, MenuCategoryData } from "../types";
 import { getUserAddress } from "./firestore";
 import firebase from "firebase";
 
@@ -75,17 +75,18 @@ const menuSlice = createSlice({
 });
 
 // --- USER ADDRESS --- //
-const addressInitialState: string | null = null;
+const addressInitialState: Address | null = null;
 
 const addressSlice = createSlice<
-  string | null,
-  SliceCaseReducers<string | null>,
+  Address | null,
+  SliceCaseReducers<Address | null>,
   "userAddress"
 >({
   name: "userAddress",
   initialState: addressInitialState,
   reducers: {
-    setAddress: (state, action: PayloadAction<string | null>) => action.payload,
+    setAddress: (state, action: PayloadAction<Address | null>) =>
+      action.payload,
   },
 });
 
@@ -126,7 +127,7 @@ export const emptyCart = () => {
 export const updateMenu = (menuData: MenuCategoryData[]) =>
   store.dispatch(menuSlice.actions.setMenu(menuData));
 
-export const updateAddress = (newAddress: string | null) =>
+export const updateAddress = (newAddress: Address | null) =>
   store.dispatch(addressSlice.actions.setAddress(newAddress));
 
 export const fetchAddress = async (user: firebase.User) => {
