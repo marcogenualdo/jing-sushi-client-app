@@ -9,7 +9,6 @@ import {
   IonHeader,
   IonIcon,
   IonImg,
-  IonInput,
   IonItem,
   IonItemDivider,
   IonLabel,
@@ -21,7 +20,6 @@ import {
   IonTextarea,
   IonTitle,
   IonToast,
-  IonToggle,
   IonToolbar,
 } from "@ionic/react";
 import {
@@ -33,6 +31,7 @@ import {
 import React, { useEffect, useReducer, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import defaultImage from "../assets/menu-default.jpg";
+import AddressEditor from "../components/AddressEditor";
 import Layout from "../components/Layout";
 import { auth, putOrder } from "../tools/firestore";
 import { useCartTotal } from "../tools/hooks";
@@ -44,6 +43,7 @@ import {
   useAppSelector,
 } from "../tools/store";
 import {
+  Address,
   CartItemData,
   OrderDraft,
   OrderStatus,
@@ -145,6 +145,7 @@ const OrderModal: React.FC<{
 }> = ({ isOpen, setIsOpen }) => {
   // order data
   const [user] = useAuthState(auth);
+  const currentAddress = useAppSelector((state) => state.address);
 
   const cartData = useAppSelector((state) => state.cart);
   const userAddress = useAppSelector((state) => state.address);
@@ -165,9 +166,6 @@ const OrderModal: React.FC<{
   }, [cartData]);
 
   // UI state
-  const [editAddress, setEditAddress] = useState(false);
-  const toggleAddress = () => setEditAddress(!editAddress);
-
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showFailureToast, setShowFailureToast] = useState(false);
 
@@ -187,7 +185,6 @@ const OrderModal: React.FC<{
 
       // resetting UI
       setCanSendOrder(true);
-      setEditAddress(false);
       setIsOpen(false);
     } catch (err) {
       console.error(err);
@@ -299,40 +296,15 @@ const OrderModal: React.FC<{
             ></IonDatetime>
           </IonItem>
           {orderData.type === OrderType.Delivery && (
-            <>
-              <IonItem lines="none">
-                <IonLabel position="stacked">Indirizzo di consegna</IonLabel>
-                <IonInput
-                  value={orderData.deliveryAddress?.address}
-                  placeholder="Nuovo indirizzo..."
-                  onIonChange={(e) =>
-                    dispatchOrderData({
-                      type: "deliveryAddress",
-                      value: e.detail.value!,
-                    })
-                  }
-                  disabled={!editAddress}
-                ></IonInput>
-              </IonItem>
-              <IonItem lines="none">
-                <IonItem>
-                  <IonLabel style={{ whiteSpace: "break-spaces" }}>
-                    Usa un altro indirizzo per questo ordine
-                  </IonLabel>
-                  <IonToggle
-                    checked={editAddress}
-                    onIonChange={(e) => {
-                      dispatchOrderData({
-                        type: "deliveryAddress",
-                        value: e.detail.checked ? "" : userAddress!,
-                      });
-                      toggleAddress();
-                    }}
-                    color="primary"
-                  />
-                </IonItem>
-              </IonItem>
-            </>
+            <AddressEditor
+              currentAddress={currentAddress}
+              canConfirm={true}
+              onConfirm={(addr: Address) =>
+                dispatchOrderData({ type: "deliveryAddress", value: addr })
+              }
+              liveEdit={true}
+              toggleLabel="Usa un altro indirizzo per questo ordine"
+            />
           )}
           <IonItem>
             <p>

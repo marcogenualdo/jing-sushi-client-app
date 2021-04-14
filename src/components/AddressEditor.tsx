@@ -8,16 +8,16 @@ import {
 } from "@ionic/react";
 import "firebaseui/dist/firebaseui.css";
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../tools/store";
 import { Address } from "../types";
 import "../pages/profile.css";
 
 const AddressEditor: React.FC<{
   canConfirm: boolean;
+  currentAddress: Address | null;
   onConfirm: (addr: Address) => void;
+  liveEdit: boolean;
   toggleLabel: string;
-}> = ({ canConfirm, onConfirm, toggleLabel }) => {
-  const currentAddress = useAppSelector((state) => state.address);
+}> = ({ currentAddress, canConfirm, onConfirm, liveEdit, toggleLabel }) => {
   const [canEditAddress, setCanEditAddress] = useState<boolean>(false);
 
   const [editedAddress, setEditedAddress] = useState<string | undefined>(
@@ -36,6 +36,11 @@ const AddressEditor: React.FC<{
     if (!canEditAddress || !editedZip) setEditedZip(currentAddress?.zip);
   }, [currentAddress, editedAddress, editedZip, canEditAddress]);
 
+  const updater = () => {
+    if (liveEdit && editedAddress && editedZip)
+      onConfirm({ address: editedAddress, zip: editedZip });
+  };
+
   return (
     <IonList>
       <IonItem lines="none">
@@ -45,17 +50,23 @@ const AddressEditor: React.FC<{
           placeholder={
             currentAddress?.address ?? "Non hai ancora inserito un indirizzo."
           }
-          onIonChange={(e) => setEditedAddress(e.detail.value!)}
+          onIonChange={(e) => {
+            setEditedAddress(e.detail.value!);
+            updater();
+          }}
           disabled={!canEditAddress}
         />
         <IonLabel position="stacked">CAP</IonLabel>
         <IonInput
           value={editedZip}
           placeholder={currentAddress?.zip ?? "Non hai ancora inserito un CAP."}
-          onIonChange={(e) => setEditedZip(e.detail.value!)}
+          onIonChange={(e) => {
+            setEditedZip(e.detail.value!);
+            updater();
+          }}
           disabled={!canEditAddress}
         />
-        {canEditAddress && (
+        {!liveEdit && canEditAddress && (
           <IonButton
             onClick={() => {
               if (

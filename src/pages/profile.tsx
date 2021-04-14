@@ -1,24 +1,14 @@
-import {
-  IonAlert,
-  IonButton,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonToast,
-  IonToggle,
-} from "@ionic/react";
+import { IonAlert, IonButton, IonToast } from "@ionic/react";
 import "firebaseui/dist/firebaseui.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import AddressEditor from "../components/AddressEditor";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
 import { updateAddress, useAppSelector } from "../tools/store";
-import "./profile.css";
 import { Address } from "../types";
-import firebase from "firebase";
-import AddressEditor from "../components/AddressEditor";
+import "./profile.css";
 
 export const SignIn: React.FC = () => (
   <div style={{ position: "relative" }}>
@@ -60,6 +50,7 @@ export const SignOut: React.FC = () => {
 
 const SignedIn = () => {
   const [user] = useAuthState(auth);
+  const currentAddress = useAppSelector((state) => state.address);
 
   // UI state
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -106,8 +97,10 @@ const SignedIn = () => {
         duration={1000}
       />
       <AddressEditor
+        currentAddress={currentAddress}
         canConfirm={canSendAddress}
         onConfirm={sendAddress}
+        liveEdit={false}
         toggleLabel="Modifica indirizzo di default."
       />
 
