@@ -31,7 +31,7 @@ import { CategoryDetail, MenuCategories } from "./pages/menu";
 import Profile from "./pages/profile";
 /* Theme variables */
 import "./theme/variables.css";
-import { auth, fetchMenu } from "./tools/firestore";
+import { auth, fetchMenu, fetchZipCodes } from "./tools/firestore";
 import { fetchAddress } from "./tools/store";
 
 export const BottomNav: React.FC = () => (
@@ -74,6 +74,7 @@ const App: React.FC = () => {
   }, [user]);
   try {
     fetchMenu();
+    fetchZipCodes();
   } catch (err) {
     console.error(err);
   }

@@ -4,11 +4,18 @@ import {
   PayloadAction,
   SliceCaseReducers,
 } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { Address, CartData, CartItemData, MenuCategoryData } from "../types";
-import { getUserAddress } from "./firestore";
 import firebase from "firebase";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import {
+  Address,
+  CartData,
+  CartItemData,
+  MenuCategoryData,
+  ZipCodes,
+} from "../types";
+import { getUserAddress } from "./firestore";
 
+// --- CART --- //
 /**
  * Adds a quantity to an item in the shopping cart.
  */
@@ -43,7 +50,6 @@ export interface AddToCartItemActionPayload {
   n: number;
 }
 
-// --- CART --- //
 const cartInitialState: CartData = {};
 
 const cartSlice = createSlice({
@@ -90,11 +96,28 @@ const addressSlice = createSlice<
   },
 });
 
+// --- ZIP CODES --- //
+const zipsInitialState: ZipCodes | null = null;
+
+const zipsSlice = createSlice<
+  ZipCodes | null,
+  SliceCaseReducers<ZipCodes | null>,
+  "zipCodes"
+>({
+  name: "zipCodes",
+  initialState: zipsInitialState,
+  reducers: {
+    setZipCodes: (state, action: PayloadAction<ZipCodes | null>) =>
+      action.payload,
+  },
+});
+
 const store = configureStore({
   reducer: {
     cart: cartSlice.reducer,
     menu: menuSlice.reducer,
     address: addressSlice.reducer,
+    zipCodes: zipsSlice.reducer,
   },
 });
 
@@ -126,6 +149,9 @@ export const emptyCart = () => {
 
 export const updateMenu = (menuData: MenuCategoryData[]) =>
   store.dispatch(menuSlice.actions.setMenu(menuData));
+
+export const updateZipCodes = (zipData: ZipCodes) =>
+  store.dispatch(zipsSlice.actions.setZipCodes(zipData));
 
 export const updateAddress = (newAddress: Address | null) =>
   store.dispatch(addressSlice.actions.setAddress(newAddress));

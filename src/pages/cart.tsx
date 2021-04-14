@@ -196,6 +196,18 @@ const OrderModal: React.FC<{
     }
   };
 
+  // zip code validation
+  const zipCodes = useAppSelector((state) => state.zipCodes);
+  const [zipOk, setZipOk] = useState<boolean>(false);
+  const [minOrderOk, setMinOrderOk] = useState<boolean>(false);
+
+  useEffect(() => {
+    const orderZip = orderData.deliveryAddress?.zip;
+
+    setZipOk(!!zipCodes && !!orderZip && zipCodes[orderZip] !== undefined);
+    setMinOrderOk(zipOk && zipCodes![orderZip!] <= orderTotal);
+  }, [zipOk, zipCodes, orderTotal, orderData.deliveryAddress, minOrderOk]);
+
   return (
     <IonModal isOpen={isOpen}>
       <IonToast
@@ -299,9 +311,9 @@ const OrderModal: React.FC<{
             <AddressEditor
               currentAddress={currentAddress}
               canConfirm={true}
-              onConfirm={(addr: Address) =>
-                dispatchOrderData({ type: "deliveryAddress", value: addr })
-              }
+              onConfirm={(addr: Address) => {
+                dispatchOrderData({ type: "deliveryAddress", value: addr });
+              }}
               liveEdit={true}
               toggleLabel="Usa un altro indirizzo per questo ordine"
             />
@@ -332,10 +344,21 @@ const OrderModal: React.FC<{
               }
             ></IonTextarea>
           </IonItem>
+          {!minOrderOk && (
+            <IonItem>
+              <IonLabel color="danger">
+                {zipOk
+                  ? `L'ordine minimo per questo CAP è ${
+                      zipCodes![orderData.deliveryAddress?.zip!]
+                    } €`
+                  : "Siamo spiacenti. Non consegnamo in questo CAP."}
+              </IonLabel>
+            </IonItem>
+          )}
           <IonButton
             expand="block"
             style={{ padding: "0 1rem" }}
-            disabled={Object.keys(cartData).length === 0 || !canSendOrder}
+            disabled={!canSendOrder || !zipOk || !minOrderOk}
             onClick={sendOrder}
           >
             Invia Ordine

@@ -59,3 +59,5 @@ export interface Order {
 }
 
 export type OrderDraft = Omit<Order, "creationTime">;
+
+export type ZipCodes = Record<string, number>;

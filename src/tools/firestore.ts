@@ -1,6 +1,6 @@
 import firebase from "firebase";
 import { Address, MenuCategoryData, Order, OrderDraft, User } from "../types";
-import { updateMenu } from "./store";
+import { updateMenu, updateZipCodes } from "./store";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBR3dh8ok7mxd4gqBIh4dw9BBYlUME7xBw",
@@ -26,6 +26,20 @@ export const fetchMenu = async () => {
   const menuData = data.docs.map((doc) => doc.data()) as MenuCategoryData[];
   console.info("Fetched %s categories from firestore menu.", menuData.length);
   updateMenu(menuData);
+};
+
+export const fetchZipCodes = async () => {
+  const data = await firestore.collection("zipCodes").get();
+
+  const zipsData = data.docs.reduce((acc, doc) => {
+    const item = doc.data() as { zip: string; minOrder: number };
+    return { ...acc, [item.zip]: item.minOrder };
+  }, {});
+  console.info(
+    "Fetched %s zip codes from firestore.",
+    Object.keys(zipsData).length
+  );
+  updateZipCodes(zipsData);
 };
 
 export const getUserAddress = async (

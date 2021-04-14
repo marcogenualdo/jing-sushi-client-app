@@ -36,9 +36,11 @@ const AddressEditor: React.FC<{
     if (!canEditAddress || !editedZip) setEditedZip(currentAddress?.zip);
   }, [currentAddress, editedAddress, editedZip, canEditAddress]);
 
-  const updater = () => {
-    if (liveEdit && editedAddress && editedZip)
-      onConfirm({ address: editedAddress, zip: editedZip });
+  const updater = (
+    address: string | null | undefined,
+    zip: string | null | undefined
+  ) => {
+    if (liveEdit && address && zip) onConfirm({ address, zip });
   };
 
   return (
@@ -52,7 +54,7 @@ const AddressEditor: React.FC<{
           }
           onIonChange={(e) => {
             setEditedAddress(e.detail.value!);
-            updater();
+            updater(e.detail.value, editedZip);
           }}
           disabled={!canEditAddress}
         />
@@ -62,7 +64,7 @@ const AddressEditor: React.FC<{
           placeholder={currentAddress?.zip ?? "Non hai ancora inserito un CAP."}
           onIonChange={(e) => {
             setEditedZip(e.detail.value!);
-            updater();
+            updater(editedAddress, e.detail.value);
           }}
           disabled={!canEditAddress}
         />
