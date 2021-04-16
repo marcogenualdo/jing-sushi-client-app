@@ -21,3 +21,12 @@
   font-size: 1.2rem;
   color: #ffe86d;
 }
+
+.contacts-icon {
+  margin: 0 0.5rem;
+}
+
+.contacts-value {
+  line-height: 24px;
+  letter-spacing: 1px;
+}

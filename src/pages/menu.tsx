@@ -21,6 +21,7 @@ import React from "react";
 import { RouteComponentProps } from "react-router";
 import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
+import ListStopper from "../components/ListStopper";
 import {
   cartItemDecrement,
   cartItemIncrement,
@@ -90,7 +91,7 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
             <MenuItem item={item} key={index} />
           ))}
         </IonList>
-        <IonItemDivider style={{ border: "0px" }} />
+        <ListStopper />
       </IonContent>
     </IonPage>
   );
@@ -118,7 +119,7 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
           </IonItem>
         ))}
       </IonList>
-      <IonItemDivider style={{ border: "0px" }} />
+      <ListStopper />
     </Layout>
   );
 };
