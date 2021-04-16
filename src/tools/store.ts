@@ -1,8 +1,22 @@
-import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { CartData, CartItemData, MenuCategoryData } from "../types";
+import {
+  configureStore,
+  createSlice,
+  PayloadAction,
+  SliceCaseReducers,
+} from "@reduxjs/toolkit";
 import firebase from "firebase";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import {
+  Address,
+  CartData,
+  CartItemData,
+  InfoCollection,
+  MenuCategoryData,
+  ZipCodes,
+} from "../types";
+import { getUserAddress } from "./firestore";
 
+// --- CART --- //
 /**
  * Adds a quantity to an item in the shopping cart.
  */
@@ -37,7 +51,6 @@ export interface AddToCartItemActionPayload {
   n: number;
 }
 
-// --- CART --- //
 const cartInitialState: CartData = {};
 
 const cartSlice = createSlice({
@@ -49,6 +62,9 @@ const cartSlice = createSlice({
       action: PayloadAction<AddToCartItemActionPayload>
     ) => {
       return addToCartItemInner(state, action.payload.item, action.payload.n);
+    },
+    emptyCart: () => {
+      return {};
     },
   },
 });
@@ -65,8 +81,62 @@ const menuSlice = createSlice({
   },
 });
 
+// --- INFO --- //
+const infoInitialState: InfoCollection | null = null;
+
+const infoSlice = createSlice<
+  InfoCollection | null,
+  SliceCaseReducers<InfoCollection | null>,
+  "info"
+>({
+  name: "info",
+  initialState: infoInitialState,
+  reducers: {
+    setInfo: (state, action: PayloadAction<InfoCollection | null>) =>
+      action.payload,
+  },
+});
+
+// --- USER ADDRESS --- //
+const addressInitialState: Address | null = null;
+
+const addressSlice = createSlice<
+  Address | null,
+  SliceCaseReducers<Address | null>,
+  "userAddress"
+>({
+  name: "userAddress",
+  initialState: addressInitialState,
+  reducers: {
+    setAddress: (state, action: PayloadAction<Address | null>) =>
+      action.payload,
+  },
+});
+
+// --- ZIP CODES --- //
+const zipsInitialState: ZipCodes | null = null;
+
+const zipsSlice = createSlice<
+  ZipCodes | null,
+  SliceCaseReducers<ZipCodes | null>,
+  "zipCodes"
+>({
+  name: "zipCodes",
+  initialState: zipsInitialState,
+  reducers: {
+    setZipCodes: (state, action: PayloadAction<ZipCodes | null>) =>
+      action.payload,
+  },
+});
+
 const store = configureStore({
-  reducer: { cart: cartSlice.reducer, menu: menuSlice.reducer },
+  reducer: {
+    cart: cartSlice.reducer,
+    menu: menuSlice.reducer,
+    address: addressSlice.reducer,
+    zipCodes: zipsSlice.reducer,
+    info: infoSlice.reducer,
+  },
 });
 
 export type AppState = ReturnType<typeof store.getState>;
@@ -91,5 +161,23 @@ export const cartItemTrash = (item: CartItemData) => {
   }
 };
 
+export const emptyCart = () => {
+  store.dispatch(cartSlice.actions.emptyCart());
+};
+
 export const updateMenu = (menuData: MenuCategoryData[]) =>
   store.dispatch(menuSlice.actions.setMenu(menuData));
+
+export const updateZipCodes = (zipData: ZipCodes) =>
+  store.dispatch(zipsSlice.actions.setZipCodes(zipData));
+
+export const updateAddress = (newAddress: Address | null) =>
+  store.dispatch(addressSlice.actions.setAddress(newAddress));
+
+export const updateInfo = (info: InfoCollection | null) =>
+  store.dispatch(infoSlice.actions.setInfo(info));
+
+export const fetchAddress = async (user: firebase.User) => {
+  const newAddress = await getUserAddress(user);
+  updateAddress(newAddress);
+};

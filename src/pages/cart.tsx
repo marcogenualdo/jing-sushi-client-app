@@ -5,7 +5,9 @@ import {
   IonFab,
   IonFabButton,
   IonIcon,
+  IonImg,
   IonItem,
+  IonItemDivider,
   IonLabel,
   IonList,
   IonNote,
@@ -16,8 +18,12 @@ import {
   sendOutline,
   trashOutline,
 } from "ionicons/icons";
-import React from "react";
+import React, { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
+import OrderModal from "../components/OrderModal";
+import { auth } from "../tools/firestore";
 import {
   cartItemDecrement,
   cartItemIncrement,
@@ -27,6 +33,54 @@ import {
 import { CartItemData } from "../types";
 import "./cart.css";
 
+export const Cart: React.FC = () => {
+  const [user] = useAuthState(auth);
+  const cartData = useAppSelector((state) => state.cart);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+
+  return (
+    <Layout pageName="Carrello">
+      <IonList>
+        {Object.values(cartData).map((item) => (
+          <CartItem item={item} />
+        ))}
+        <IonItemDivider />
+        <IonItem lines="none">
+          <h2>Sconti e offerte</h2>
+        </IonItem>
+        <IonItem>
+          <ul className="cart-bottom-ad">
+            <li>Ritiro: sconto del 10% per ordini maggiori di 20€</li>
+            <li>
+              Consegna: sconto del 10% per ordini maggiori di 50€ (esclusi cap
+              00124, 00127)
+            </li>
+            <li>Una birra in omaggio per oridini superiori a 30€</li>
+          </ul>
+        </IonItem>
+        {!user && (
+          <IonLabel color="danger" style={{ padding: "2rem" }}>
+            Registrati per effetturare un ordine.
+          </IonLabel>
+        )}
+      </IonList>
+      {user && (
+        <IonFab
+          vertical="bottom"
+          horizontal="start"
+          slot="fixed"
+          onClick={() => setShowOrderModal(true)}
+        >
+          <IonFabButton>
+            <IonIcon icon={sendOutline} />
+          </IonFabButton>
+        </IonFab>
+      )}
+      <OrderModal isOpen={showOrderModal} setIsOpen={setShowOrderModal} />
+    </Layout>
+  );
+};
+
 const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
   const quantity = useAppSelector(
     (state) => state.cart[item.code]?.quantity ?? 0
@@ -35,10 +89,7 @@ const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
   return (
     <IonItem key={item.code}>
       <IonAvatar slot="start" style={{ marginRight: "10px" }}>
-        <img
-          src="https://i0.wp.com/www.candidafood.com/wp-content/uploads/2009/11/foods-to-eat-candida.jpg?resize=180%2C180"
-          alt="null"
-        />
+        <IonImg src={defaultImage} alt="null" />
       </IonAvatar>
 
       <IonNote className="menu-item-text">
@@ -67,25 +118,5 @@ const CartItem: React.FC<{ item: CartItemData }> = ({ item }) => {
         </IonButtons>
       </IonLabel>
     </IonItem>
-  );
-};
-
-export const Cart: React.FC = () => {
-  const cartData = useAppSelector((state) => state.cart);
-
-  return (
-    <Layout pageName="Carrello">
-      <IonList>
-        {Object.values(cartData).map((item) => (
-          <CartItem item={item} />
-        ))}
-      </IonList>
-      <IonFab vertical="bottom" horizontal="start" slot="fixed">
-        <IonFabButton className="cart-fab">
-          <strong>Ordina</strong>
-          <IonIcon icon={sendOutline} />
-        </IonFabButton>
-      </IonFab>
-    </Layout>
   );
 };

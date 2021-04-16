@@ -6,7 +6,9 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
+  IonImg,
   IonItem,
+  IonItemDivider,
   IonLabel,
   IonList,
   IonNote,
@@ -17,6 +19,7 @@ import {
 import { addOutline, removeOutline } from "ionicons/icons";
 import React from "react";
 import { RouteComponentProps } from "react-router";
+import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
 import {
   cartItemDecrement,
@@ -37,12 +40,9 @@ const MenuItem: React.FC<{ item: MenuItemData }> = ({ item }) => {
   );
 
   return (
-    <IonItem key={item.code}>
+    <IonItem key={item.code} className="menu-item">
       <IonAvatar slot="start" style={{ marginRight: "10px" }}>
-        <img
-          src="https://i0.wp.com/www.candidafood.com/wp-content/uploads/2009/11/foods-to-eat-candida.jpg?resize=180%2C180"
-          alt="none"
-        />
+        <IonImg src={defaultImage} alt="null" />
       </IonAvatar>
 
       <IonNote color="dark" className="menu-item-text">
@@ -86,10 +86,11 @@ export const CategoryDetail: React.FC<CategoryDetailProps> = ({ match }) => {
 
       <IonContent fullscreen>
         <IonList>
-          {categoryData.dishes.map((item) => (
-            <MenuItem item={item} />
+          {categoryData.dishes.map((item, index) => (
+            <MenuItem item={item} key={index} />
           ))}
         </IonList>
+        <IonItemDivider style={{ border: "0px" }} />
       </IonContent>
     </IonPage>
   );
@@ -102,12 +103,14 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
     <Layout pageName="Menù">
       <IonList>
         {menuData.map(({ name }, index) => (
-          <IonItem detail routerLink={`/menu/${index}`}>
+          <IonItem
+            detail
+            routerLink={`/menu/${index}`}
+            className="menu-item"
+            key={index}
+          >
             <IonAvatar slot="start">
-              <img
-                src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y"
-                alt="none"
-              />
+              <IonImg src={defaultImage} alt="null" />
             </IonAvatar>
             <IonLabel>
               <h2>{name}</h2>
@@ -115,6 +118,7 @@ export const MenuCategories: React.FC<RouteComponentProps> = () => {
           </IonItem>
         ))}
       </IonList>
+      <IonItemDivider style={{ border: "0px" }} />
     </Layout>
   );
 };

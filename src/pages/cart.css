@@ -2,3 +2,7 @@
   width: 5rem;
   border-radius: 0.5rem !important;
 }
+
+.cart-bottom-ad li {
+  padding: 0.5rem 0;
+}

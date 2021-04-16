@@ -1,0 +1,23 @@
+.opening-time-value {
+  overflow: visible !important;
+  margin-left: 0;
+  height: 4rem;
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 1rem;
+  justify-content: center;
+}
+
+.opening-time-key {
+  font-size: 1.3rem !important;
+}
+
+.opening-time-label {
+  color: #808080;
+}
+
+.opening-time-range {
+  font-size: 1.2rem;
+  color: #ffe86d;
+}
