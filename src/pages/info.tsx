@@ -1,6 +1,8 @@
 import { home, logoFacebook, call, mail } from "ionicons/icons";
 import {
+  IonAvatar,
   IonIcon,
+  IonImg,
   IonItem,
   IonItemDivider,
   IonLabel,
@@ -12,6 +14,7 @@ import { useAppSelector } from "../tools/store";
 import { OpeningTime, WeekOpeningTimes } from "../types";
 import "./info.css";
 import ListStopper from "../components/ListStopper";
+import jingImg from "../assets/menu-default.jpg";
 
 const weekDaysNames: Record<keyof WeekOpeningTimes, string> = {
   0: "Domenica",
@@ -59,6 +62,17 @@ const Info: React.FC = () => {
   return (
     <Layout pageName="Info">
       <IonList>
+        <IonItem>
+          <IonTitle slot="start" color="primary">
+            Jing Sushi
+          </IonTitle>
+          <IonAvatar slot="end" style={{ height: "7rem", width: "7rem" }}>
+            <IonImg src={jingImg} />
+          </IonAvatar>
+        </IonItem>
+
+        <IonItemDivider />
+
         <IonItem>
           <IonTitle>Contatti</IonTitle>
         </IonItem>
