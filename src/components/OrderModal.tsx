@@ -28,15 +28,9 @@ import {
   OrderStatus,
   OrderType,
   PaymentType,
+  WeekOpeningTimes,
 } from "../types";
 import "../pages/cart.css";
-
-const orderDraftReducer = <K extends keyof OrderDraft>(
-  state: OrderDraft,
-  action: { type: K; value: OrderDraft[K] }
-) => {
-  return { ...state, [action.type]: action.value };
-};
 
 const OrderModal: React.FC<{
   isOpen: boolean;
@@ -110,7 +104,19 @@ const OrderModal: React.FC<{
   }, [zipOk, zipCodes, orderTotal, orderData.deliveryAddress, minOrderOk]);
 
   // date refresh
-  const [today, setToday] = useState(new Date());
+  const [openRange, setOpenRange] = useState<{
+    minTime?: Date;
+    maxTime?: Date;
+  }>({});
+  const openingTimes = useAppSelector((state) => state.info?.openingTimes);
+  useEffect(() => {
+    if (openingTimes) {
+      const { minTime, maxTime } = getOpeningTime(openingTimes);
+      setOpenRange({ minTime, maxTime });
+      console.log("min %o", minTime);
+      console.log("max %o", maxTime);
+    }
+  }, [openingTimes]);
 
   return (
     <IonModal isOpen={isOpen}>
@@ -205,6 +211,8 @@ const OrderModal: React.FC<{
               cancelText="Annulla"
               doneText="Ok"
               value={orderData.deliveryTime.toString()}
+              min={localISOString(openRange.minTime)}
+              max={localISOString(openRange.maxTime)}
               onIonChange={(e) =>
                 dispatchOrderData({
                   type: "deliveryTime",
@@ -279,3 +287,44 @@ const OrderModal: React.FC<{
 };
 
 export default OrderModal;
+
+const localISOString = (date: Date | undefined) => {
+  if (date === undefined) return undefined;
+
+  const tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
+  const localISOTime = new Date(date.getTime() - tzoffset)
+    .toISOString()
+    .slice(0, -1);
+  return localISOTime;
+};
+
+const getOpeningTime = (openingTimes: WeekOpeningTimes) => {
+  const now = new Date();
+
+  const currentWeekDay = now.getDay() as keyof WeekOpeningTimes;
+  const currentOpeningData = openingTimes[currentWeekDay];
+
+  const lunchEnd = new Date();
+  lunchEnd.setHours(currentOpeningData.lunch.to.hour);
+  lunchEnd.setMinutes(currentOpeningData.lunch.to.minute);
+
+  const lunchIsOver = lunchEnd <= now;
+
+  const minTime = new Date();
+  const maxTime = new Date();
+  const phase = lunchIsOver ? "dinner" : "lunch";
+
+  minTime.setHours(currentOpeningData[phase].from.hour);
+  minTime.setMinutes(currentOpeningData[phase].from.minute);
+  maxTime.setHours(currentOpeningData[phase].to.hour);
+  maxTime.setMinutes(currentOpeningData[phase].to.minute);
+
+  return { minTime, maxTime };
+};
+
+const orderDraftReducer = <K extends keyof OrderDraft>(
+  state: OrderDraft,
+  action: { type: K; value: OrderDraft[K] }
+) => {
+  return { ...state, [action.type]: action.value };
+};
