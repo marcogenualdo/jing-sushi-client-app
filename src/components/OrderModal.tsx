@@ -91,6 +91,28 @@ const OrderModal: React.FC<{
     }
   };
 
+  // date refresh
+  const [editedDeliveryTime, setEditedDeliveryTime] = useState<boolean>(false);
+  const [openRange, setOpenRange] = useState<{
+    minTime?: Date;
+    maxTime?: Date;
+  }>({});
+  const openingTimes = useAppSelector((state) => state.info?.openingTimes);
+  useEffect(() => {
+    if (openingTimes) {
+      const { minTime, maxTime } = getOpeningTime(openingTimes);
+      setOpenRange({ minTime, maxTime });
+    }
+  }, [openingTimes]);
+  useEffect(() => {
+    if (!editedDeliveryTime) {
+      dispatchOrderData({
+        type: "deliveryTime",
+        value: suggestDeliveryTime(openRange.minTime, openRange.maxTime),
+      });
+    }
+  }, [editedDeliveryTime, openRange]);
+
   // zip code validation
   const zipCodes = useAppSelector((state) => state.zipCodes);
   const [zipOk, setZipOk] = useState<boolean>(false);
@@ -102,21 +124,6 @@ const OrderModal: React.FC<{
     setZipOk(!!zipCodes && !!orderZip && zipCodes[orderZip] !== undefined);
     setMinOrderOk(zipOk && zipCodes![orderZip!] <= orderTotal);
   }, [zipOk, zipCodes, orderTotal, orderData.deliveryAddress, minOrderOk]);
-
-  // date refresh
-  const [openRange, setOpenRange] = useState<{
-    minTime?: Date;
-    maxTime?: Date;
-  }>({});
-  const openingTimes = useAppSelector((state) => state.info?.openingTimes);
-  useEffect(() => {
-    if (openingTimes) {
-      const { minTime, maxTime } = getOpeningTime(openingTimes);
-      setOpenRange({ minTime, maxTime });
-      console.log("min %o", minTime);
-      console.log("max %o", maxTime);
-    }
-  }, [openingTimes]);
 
   return (
     <IonModal isOpen={isOpen}>
@@ -213,12 +220,13 @@ const OrderModal: React.FC<{
               value={orderData.deliveryTime.toString()}
               min={localISOString(openRange.minTime)}
               max={localISOString(openRange.maxTime)}
-              onIonChange={(e) =>
+              onIonChange={(e) => {
+                setEditedDeliveryTime(true);
                 dispatchOrderData({
                   type: "deliveryTime",
                   value: new Date(e.detail.value!),
-                })
-              }
+                });
+              }}
             ></IonDatetime>
           </IonItem>
           {orderData.type === OrderType.Delivery && (
@@ -320,6 +328,15 @@ const getOpeningTime = (openingTimes: WeekOpeningTimes) => {
   maxTime.setMinutes(currentOpeningData[phase].to.minute);
 
   return { minTime, maxTime };
+};
+
+const suggestDeliveryTime = (min: Date | undefined, max: Date | undefined) => {
+  const now = new Date();
+  if (!min || !max) return now;
+
+  const bottom = Math.max(min.getTime(), now.getTime());
+  const clipped = Math.min(bottom + 60000 * 30, max.getTime());
+  return new Date(clipped);
 };
 
 const orderDraftReducer = <K extends keyof OrderDraft>(
