@@ -42,7 +42,7 @@ export const Cart: React.FC = () => {
     <Layout pageName="Carrello">
       <IonList>
         {Object.values(cartData).map((item) => (
-          <CartItem item={item} />
+          <CartItem item={item} key={item.code} />
         ))}
         <IonItemDivider />
         <IonItem lines="none">
