@@ -95,7 +95,7 @@ const Info: React.FC = () => {
         <ContactsItem
           icon={logoFacebook}
           label="Facebook"
-          value="Link"
+          value="Vai alla pagina"
           href={contacts?.facebookRef ?? ""}
         />
         <ContactsItem icon={mail} label="Email" value={contacts?.email ?? ""} />
