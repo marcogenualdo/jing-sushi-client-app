@@ -1,6 +1,11 @@
 .cart-fab {
-  width: 5rem;
-  border-radius: 0.5rem !important;
+  --border-radius: 1rem;
+
+  width: 6rem;
+}
+
+.cart-fab span {
+  margin: 0 0.5rem 0 0.1rem;
 }
 
 .cart-bottom-ad li {

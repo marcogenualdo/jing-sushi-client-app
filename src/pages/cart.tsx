@@ -71,8 +71,8 @@ export const Cart: React.FC = () => {
           slot="fixed"
           onClick={() => setShowOrderModal(true)}
         >
-          <IonFabButton>
-            <IonIcon icon={sendOutline} />
+          <IonFabButton className="cart-fab">
+            <span>ORDINA</span> <IonIcon icon={sendOutline} />
           </IonFabButton>
         </IonFab>
       )}
