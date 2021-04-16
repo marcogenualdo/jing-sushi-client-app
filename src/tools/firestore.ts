@@ -1,6 +1,14 @@
 import firebase from "firebase";
-import { Address, MenuCategoryData, Order, OrderDraft, User } from "../types";
-import { updateMenu, updateZipCodes } from "./store";
+import {
+  Address,
+  Contacts,
+  MenuCategoryData,
+  Order,
+  OrderDraft,
+  User,
+  WeekOpeningTimes,
+} from "../types";
+import { updateInfo, updateMenu, updateZipCodes } from "./store";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBR3dh8ok7mxd4gqBIh4dw9BBYlUME7xBw",
@@ -19,6 +27,17 @@ export const auth = firebase.auth();
 // login persisted when app is closed, until explicit signout
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 auth.languageCode = "it";
+
+export const fetchInfo = async () => {
+  const contactsSnap = await firestore.doc("info/contacts").get();
+  const contacts = contactsSnap.data() as Contacts;
+
+  const openingTimesSnap = await firestore.doc("info/openingTimes").get();
+  const openingTimes = openingTimesSnap.data() as WeekOpeningTimes;
+
+  console.info("Fetched info data from firestore.");
+  updateInfo({ contacts, openingTimes });
+};
 
 export const fetchMenu = async () => {
   const data = await firestore.collection("menu").get();

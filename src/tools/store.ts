@@ -10,6 +10,7 @@ import {
   Address,
   CartData,
   CartItemData,
+  InfoCollection,
   MenuCategoryData,
   ZipCodes,
 } from "../types";
@@ -80,6 +81,22 @@ const menuSlice = createSlice({
   },
 });
 
+// --- INFO --- //
+const infoInitialState: InfoCollection | null = null;
+
+const infoSlice = createSlice<
+  InfoCollection | null,
+  SliceCaseReducers<InfoCollection | null>,
+  "info"
+>({
+  name: "info",
+  initialState: infoInitialState,
+  reducers: {
+    setInfo: (state, action: PayloadAction<InfoCollection | null>) =>
+      action.payload,
+  },
+});
+
 // --- USER ADDRESS --- //
 const addressInitialState: Address | null = null;
 
@@ -118,6 +135,7 @@ const store = configureStore({
     menu: menuSlice.reducer,
     address: addressSlice.reducer,
     zipCodes: zipsSlice.reducer,
+    info: infoSlice.reducer,
   },
 });
 
@@ -155,6 +173,9 @@ export const updateZipCodes = (zipData: ZipCodes) =>
 
 export const updateAddress = (newAddress: Address | null) =>
   store.dispatch(addressSlice.actions.setAddress(newAddress));
+
+export const updateInfo = (info: InfoCollection | null) =>
+  store.dispatch(infoSlice.actions.setInfo(info));
 
 export const fetchAddress = async (user: firebase.User) => {
   const newAddress = await getUserAddress(user);

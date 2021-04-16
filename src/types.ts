@@ -61,3 +61,42 @@ export interface Order {
 export type OrderDraft = Omit<Order, "creationTime">;
 
 export type ZipCodes = Record<string, number>;
+
+export interface InfoCollection {
+  openingTimes: WeekOpeningTimes;
+  contacts: Contacts;
+}
+
+export interface Contacts {
+  facebookRef: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  address: string;
+  addressRef: string;
+}
+
+export interface WeekOpeningTimes {
+  0: OpeningTime;
+  1: OpeningTime;
+  2: OpeningTime;
+  3: OpeningTime;
+  4: OpeningTime;
+  5: OpeningTime;
+  6: OpeningTime;
+}
+
+export interface OpeningTime {
+  lunch: OpeningTimeDelta;
+  dinner: OpeningTimeDelta;
+}
+
+export interface OpeningTimeDelta {
+  from: SimpleTime;
+  to: SimpleTime;
+}
+
+export interface SimpleTime {
+  hour: number;
+  minute: number;
+}
