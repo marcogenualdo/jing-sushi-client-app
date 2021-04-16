@@ -31,7 +31,12 @@
   letter-spacing: 1px;
 }
 
+.info-title {
+  margin-left: 0.5rem;
+}
+
 .info-title strong {
+  color: #00b327;
   font-size: 1.6rem;
 }
 

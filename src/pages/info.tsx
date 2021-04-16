@@ -63,10 +63,10 @@ const Info: React.FC = () => {
     <Layout pageName="Info">
       <IonList>
         <IonItem>
-          <IonTitle slot="start" color="primary" className="info-title">
+          <div slot="start" className="info-title">
             <strong>Jing Sushi</strong>
             <p>Sushi & Cucina orientale</p>
-          </IonTitle>
+          </div>
           <IonAvatar slot="end" style={{ height: "7rem", width: "7rem" }}>
             <IonImg src={jingImg} />
           </IonAvatar>
