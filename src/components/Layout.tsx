@@ -18,12 +18,14 @@ const Layout: React.FC<{ pageName: string }> = ({ pageName, children }) => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>{pageName}</IonTitle>
-          <IonTitle slot="end">
-            <h1>
-              <IonIcon icon={cartOutline} style={{ margin: "0 0.5rem" }} />
-              {cartTotal.toFixed(2)} €
-            </h1>
-          </IonTitle>
+          {cartTotal > 0 && (
+            <IonTitle slot="end">
+              <h1>
+                <IonIcon icon={cartOutline} style={{ margin: "0 0.5rem" }} />
+                {cartTotal.toFixed(2)} €
+              </h1>
+            </IonTitle>
+          )}
         </IonToolbar>
       </IonHeader>
 
