@@ -70,15 +70,21 @@ const App: React.FC = () => {
   const [user] = useAuthState(auth);
 
   useEffect(() => {
-    if (user != null) fetchAddress(user);
+    try {
+      if (user != null) fetchAddress(user);
+    } catch (err) {
+      console.error(err);
+    }
   }, [user]);
-  try {
-    fetchMenu();
-    fetchZipCodes();
-    fetchInfo();
-  } catch (err) {
-    console.error(err);
-  }
+  useEffect(() => {
+    try {
+      fetchMenu();
+      fetchZipCodes();
+      fetchInfo();
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   return (
     <IonApp>
