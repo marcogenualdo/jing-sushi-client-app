@@ -1,4 +1,4 @@
-import { useAppSelector } from "../tools/store";
+import { useAppSelector } from "../store/store";
 
 export const useCartTotal = () => {
   const cartItems = useAppSelector((state) => state.cart);

@@ -33,7 +33,7 @@ import Profile from "./pages/profile";
 /* Theme variables */
 import "./theme/variables.css";
 import { auth, fetchInfo, fetchMenu, fetchZipCodes } from "./tools/firestore";
-import { fetchAddress } from "./tools/store";
+import { fetchAddress } from "./store/store";
 
 export const BottomNav: React.FC = () => (
   <IonTabs>

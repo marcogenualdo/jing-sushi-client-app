@@ -29,7 +29,7 @@ import {
   cartItemIncrement,
   cartItemTrash,
   useAppSelector,
-} from "../tools/store";
+} from "../store/store";
 import { CartItemData } from "../types";
 import "./cart.css";
 

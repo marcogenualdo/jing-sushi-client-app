@@ -8,7 +8,7 @@ import {
   User,
   WeekOpeningTimes,
 } from "../types";
-import { updateInfo, updateMenu, updateZipCodes } from "./store";
+import { updateInfo, updateMenu, updateZipCodes } from "../store/store";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBR3dh8ok7mxd4gqBIh4dw9BBYlUME7xBw",

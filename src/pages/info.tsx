@@ -10,7 +10,7 @@ import {
   IonTitle,
 } from "@ionic/react";
 import Layout from "../components/Layout";
-import { useAppSelector } from "../tools/store";
+import { useAppSelector } from "../store/store";
 import { OpeningTime, WeekOpeningTimes } from "../types";
 import "./info.css";
 import ListStopper from "../components/ListStopper";

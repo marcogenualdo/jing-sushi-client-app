@@ -12,7 +12,7 @@ import AddressEditor from "../components/AddressEditor";
 import Layout from "../components/Layout";
 import { signIn } from "../tools/auth";
 import { auth, setUserAddress } from "../tools/firestore";
-import { updateAddress, useAppSelector } from "../tools/store";
+import { updateAddress, useAppSelector } from "../store/store";
 import { Address } from "../types";
 import "./profile.css";
 

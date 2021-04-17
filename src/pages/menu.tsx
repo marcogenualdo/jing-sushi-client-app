@@ -25,7 +25,7 @@ import {
   cartItemDecrement,
   cartItemIncrement,
   useAppSelector,
-} from "../tools/store";
+} from "../store/store";
 import { MenuItemData } from "../types";
 import "./menu.css";
 

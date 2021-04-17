@@ -1,5 +1,4 @@
-import { fetchMenu } from "../../tools/firestore";
-import { addToCartItemInner } from "../../tools/store";
+import { addToCartItemInner } from "../../store/slices/cart";
 import { CartData, CartItemData } from "../../types";
 
 describe("addToCartItemInner", () => {

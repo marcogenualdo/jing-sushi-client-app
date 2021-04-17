@@ -21,7 +21,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import AddressEditor from "../components/AddressEditor";
 import { auth, putOrder } from "../tools/firestore";
 import { useCartTotal } from "../tools/hooks";
-import { emptyCart, useAppSelector } from "../tools/store";
+import { emptyCart, useAppSelector } from "../store/store";
 import {
   Address,
   OrderDraft,
