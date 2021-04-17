@@ -27,7 +27,6 @@ export enum OrderType {
 
 export enum OrderStatus {
   Pending = "PENDING",
-  Delivery = "DELIVERY",
   Aborted = "ABORTED",
   Completed = "COMPLETED",
 }

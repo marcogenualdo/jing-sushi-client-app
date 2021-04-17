@@ -1,4 +1,10 @@
-import { IonAlert, IonButton, IonToast } from "@ionic/react";
+import {
+  IonAlert,
+  IonButton,
+  IonItem,
+  IonItemDivider,
+  IonToast,
+} from "@ionic/react";
 import "firebaseui/dist/firebaseui.css";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -109,6 +115,11 @@ const SignedIn = () => {
           nel form di ordinazione.
         </p>
       )}
+      <IonItemDivider />
+      <IonItem detail routerLink={`/profile/myorders`}>
+        I miei ordini
+      </IonItem>
+      <IonItemDivider />
       <SignOut />
     </>
   );

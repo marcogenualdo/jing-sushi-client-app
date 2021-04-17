@@ -87,3 +87,26 @@ export const putOrder = async (orderDraft: OrderDraft) => {
   await firestore.collection("orders").doc().set(order);
   console.info("Successfully created new order.");
 };
+
+export const listMyOrders = async (uid: string) => {
+  const data = await firestore
+    .collection("orders")
+    .where("userId", "==", uid)
+    .get();
+  console.info("Successfully got order list.");
+  const myOrders = data.docs.map((item) => {
+    const dt = item.data();
+    return {
+      creationTime: dt.creationTime.toDate(),
+      deliveryTime: dt.deliveryTime.toDate(),
+      deliveryAddress: dt.deliveryAddress,
+      plates: dt.plates,
+      type: dt.type,
+      status: dt.status,
+      notes: dt.notes,
+      userId: dt.userId,
+      paymentType: dt.paymentType,
+    };
+  });
+  return myOrders;
+};

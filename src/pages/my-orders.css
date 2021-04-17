@@ -1,0 +1,15 @@
+.order-item-text {
+  margin-right: 0;
+}
+
+.order-item-text strong {
+  font-size: 0.8rem;
+}
+
+.order-item-text p {
+  font-size: 0.8rem;
+}
+
+.order-item-chip {
+  margin-left: 0;
+}
