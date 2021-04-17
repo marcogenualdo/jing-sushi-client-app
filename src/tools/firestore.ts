@@ -92,6 +92,7 @@ export const listMyOrders = async (uid: string) => {
   const data = await firestore
     .collection("orders")
     .where("userId", "==", uid)
+    .orderBy("creationTime", "desc")
     .get();
   console.info("Successfully got order list.");
   const myOrders = data.docs.map((item) => {
