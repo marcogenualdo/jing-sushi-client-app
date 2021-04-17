@@ -8,7 +8,6 @@ import {
   IonIcon,
   IonImg,
   IonItem,
-  IonItemDivider,
   IonLabel,
   IonList,
   IonNote,

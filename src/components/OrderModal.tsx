@@ -54,11 +54,16 @@ const OrderModal: React.FC<{
     deliveryTime: new Date(),
     userId: user?.uid ?? "",
   });
+
+  // updates external to this component
   useEffect(() => {
     dispatchOrderData({ type: "plates", value: Object.values(cartData) });
   }, [cartData]);
+  useEffect(() => {
+    if (user) dispatchOrderData({ type: "userId", value: user.uid });
+  }, [user]);
 
-  // UI state
+  // order state
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showFailureToast, setShowFailureToast] = useState(false);
 
@@ -98,12 +103,14 @@ const OrderModal: React.FC<{
     maxTime?: Date;
   }>({});
   const openingTimes = useAppSelector((state) => state.info?.openingTimes);
+
   useEffect(() => {
     if (openingTimes) {
       const { minTime, maxTime } = getOpeningTime(openingTimes);
       setOpenRange({ minTime, maxTime });
     }
   }, [openingTimes]);
+
   useEffect(() => {
     if (!editedDeliveryTime) {
       dispatchOrderData({
@@ -296,6 +303,9 @@ const OrderModal: React.FC<{
 
 export default OrderModal;
 
+/**
+ * Returns strigified date with time zone offset.
+ */
 const localISOString = (date: Date | undefined) => {
   if (date === undefined) return undefined;
 
@@ -306,6 +316,9 @@ const localISOString = (date: Date | undefined) => {
   return localISOTime;
 };
 
+/**
+ * Converts hh:mm format stored on db to two Date objects for the current lunch/dinner period.
+ */
 const getOpeningTime = (openingTimes: WeekOpeningTimes) => {
   const now = new Date();
 
@@ -330,6 +343,9 @@ const getOpeningTime = (openingTimes: WeekOpeningTimes) => {
   return { minTime, maxTime };
 };
 
+/**
+ * Used to display the default delivery time suggested to the user: which is now + 30 minutes.
+ */
 const suggestDeliveryTime = (min: Date | undefined, max: Date | undefined) => {
   const now = new Date();
   if (!min || !max) return now;

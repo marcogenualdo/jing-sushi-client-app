@@ -46,11 +46,8 @@ export interface User {
   address: Address;
 }
 
-export interface Order extends OrderDraft {
+export interface Order {
   creationTime: Date;
-}
-
-export interface OrderDraft {
   deliveryTime: Date;
   deliveryAddress: Address | null;
   plates: CartItemData[];
@@ -60,6 +57,8 @@ export interface OrderDraft {
   userId: string;
   paymentType: PaymentType;
 }
+
+export type OrderDraft = Omit<Order, "creationTime">;
 
 export type ZipCodes = Record<string, number>;
 
