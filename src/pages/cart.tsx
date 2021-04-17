@@ -32,6 +32,7 @@ import {
 } from "../store/store";
 import { CartItemData } from "../types";
 import "./cart.css";
+import ListStopper from "../components/ListStopper";
 
 export const Cart: React.FC = () => {
   const [user] = useAuthState(auth);
@@ -55,7 +56,7 @@ export const Cart: React.FC = () => {
               Consegna: sconto del 10% per ordini maggiori di 50€ (esclusi cap
               00124, 00127)
             </li>
-            <li>Una birra in omaggio per oridini superiori a 30€</li>
+            <li>Una birra in omaggio per ordini superiori a 30€</li>
           </ul>
         </IonItem>
         {!user && (
@@ -63,11 +64,13 @@ export const Cart: React.FC = () => {
             Registrati per effetturare un ordine.
           </IonLabel>
         )}
+        <ListStopper />
+        <ListStopper />
       </IonList>
       {user && (
         <IonFab
           vertical="bottom"
-          horizontal="start"
+          horizontal="end"
           slot="fixed"
           onClick={() => setShowOrderModal(true)}
         >
