@@ -4,7 +4,6 @@ import {
   SliceCaseReducers,
 } from "@reduxjs/toolkit";
 import { InfoCollection } from "../../types";
-import store from "../store";
 
 const infoInitialState: InfoCollection | null = null;
 
@@ -20,6 +19,3 @@ export const infoSlice = createSlice<
       action.payload,
   },
 });
-
-export const updateInfo = (info: InfoCollection | null) =>
-  store.dispatch(infoSlice.actions.setInfo(info));

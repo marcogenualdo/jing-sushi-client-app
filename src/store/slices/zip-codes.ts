@@ -4,7 +4,6 @@ import {
   SliceCaseReducers,
 } from "@reduxjs/toolkit";
 import { ZipCodes } from "../../types";
-import store from "../store";
 
 const zipsInitialState: ZipCodes | null = null;
 
@@ -20,6 +19,3 @@ export const zipsSlice = createSlice<
       action.payload,
   },
 });
-
-export const updateZipCodes = (zipData: ZipCodes) =>
-  store.dispatch(zipsSlice.actions.setZipCodes(zipData));

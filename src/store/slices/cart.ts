@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartData, CartItemData } from "../../types";
-import store from "../store";
 
 /**
  * Adds a quantity to an item in the shopping cart.
@@ -53,21 +52,3 @@ export const cartSlice = createSlice({
     },
   },
 });
-
-// functions
-export const cartItemIncrement = (item: CartItemData) =>
-  store.dispatch(cartSlice.actions.addToCartItem({ item, n: 1 }));
-
-export const cartItemDecrement = (item: CartItemData) =>
-  store.dispatch(cartSlice.actions.addToCartItem({ item, n: -1 }));
-
-export const cartItemTrash = (item: CartItemData) => {
-  const quantity = store.getState().cart[item.code]?.quantity;
-  if (quantity) {
-    store.dispatch(cartSlice.actions.addToCartItem({ item, n: -quantity }));
-  }
-};
-
-export const emptyCart = () => {
-  store.dispatch(cartSlice.actions.emptyCart());
-};

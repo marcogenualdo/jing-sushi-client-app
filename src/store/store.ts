@@ -7,12 +7,14 @@ import {
   CartItemData,
   InfoCollection,
   MenuCategoryData,
+  Order,
   ZipCodes,
 } from "../types";
 import { addressSlice } from "./slices/address";
 import { cartSlice } from "./slices/cart";
 import { infoSlice } from "./slices/info";
 import { menuSlice } from "./slices/menu";
+import { userOrdersSlice } from "./slices/user-orders";
 import { zipsSlice } from "./slices/zip-codes";
 
 const store = configureStore({
@@ -22,6 +24,7 @@ const store = configureStore({
     address: addressSlice.reducer,
     zipCodes: zipsSlice.reducer,
     info: infoSlice.reducer,
+    userOrders: userOrdersSlice.reducer,
   },
 });
 
@@ -73,3 +76,7 @@ export const fetchAddress = async (user: firebase.User) => {
 // info
 export const updateInfo = (info: InfoCollection | null) =>
   store.dispatch(infoSlice.actions.setInfo(info));
+
+// orders
+export const updateUserOrders = (orderData: Order[]) =>
+  store.dispatch(userOrdersSlice.actions.setUserOrderCodes(orderData));
