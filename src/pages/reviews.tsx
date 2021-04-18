@@ -72,7 +72,7 @@ export const UserReviews: React.FC = () => {
                     <p>{item.text}</p>
                   </IonNote>
                   <IonNote slot="end" className="review-rating">
-                    <StarScore score={4} />
+                    <StarScore score={item.score} />
                   </IonNote>
                 </IonItem>
               );
@@ -88,6 +88,7 @@ const rangeTo = (n: number) => Array.from(Array(n).keys());
 const StarScore: React.FC<{ score: number }> = ({ score }) => {
   const clippedScore = Math.min(score, 5);
   const till5 = 5 - clippedScore;
+
   return (
     <div className="review-rating">
       {rangeTo(clippedScore).map((n) => (
