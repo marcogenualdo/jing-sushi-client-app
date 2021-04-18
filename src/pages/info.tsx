@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 import Layout from "../components/Layout";
 import { useAppSelector } from "../store/store";
-import { OpeningTime, WeekOpeningTimes } from "../types";
+import { OpeningTime, WeekOpeningTimes, ZipCodes } from "../types";
 import "./info.css";
 import ListStopper from "../components/ListStopper";
 import jingImg from "../assets/menu-default.jpg";
@@ -58,6 +58,8 @@ const Info: React.FC = () => {
   const info = useAppSelector((state) => state.info);
   const openingTimes = info?.openingTimes;
   const contacts = info?.contacts;
+
+  const zipCodes = useAppSelector((state) => state.zipCodes);
 
   return (
     <Layout pageName="Info">
@@ -115,6 +117,25 @@ const Info: React.FC = () => {
             <OpeningTimeItem name={weekDaysNames[4]} data={openingTimes[4]} />
             <OpeningTimeItem name={weekDaysNames[5]} data={openingTimes[5]} />
             <OpeningTimeItem name={weekDaysNames[6]} data={openingTimes[6]} />
+          </>
+        )}
+
+        {zipCodes && (
+          <>
+            <IonItemDivider />
+            <IonItem>
+              <IonTitle>Zone di consegna</IonTitle>
+            </IonItem>
+            <IonItem>
+              <IonLabel slot="start">CAP</IonLabel>
+              <IonLabel style={{ textAlign: "right" }}>Ordine minimo</IonLabel>
+            </IonItem>
+            {Object.keys(zipCodes).map((key) => (
+              <IonItem>
+                <IonLabel slot="start">{key}</IonLabel>
+                <IonLabel slot="end">{zipCodes[key].toFixed(2)} €</IonLabel>
+              </IonItem>
+            ))}
           </>
         )}
         <ListStopper />

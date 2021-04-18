@@ -36,7 +36,7 @@
 }
 
 .info-title strong {
-  color: #00b327;
+  color: var(--ion-color-primary);
   font-size: 1.6rem;
 }
 

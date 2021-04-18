@@ -165,7 +165,9 @@ const OrderModal: React.FC<{
             <IonLabel>
               <h1>Totale</h1>
             </IonLabel>
-            <IonLabel>{orderTotal.toFixed(2)} €</IonLabel>
+            <IonLabel style={{ textAlign: "right" }}>
+              {orderTotal.toFixed(2)} €
+            </IonLabel>
           </IonItem>
           <IonItem lines="none">
             <IonLabel>Modalità di pagamento</IonLabel>
