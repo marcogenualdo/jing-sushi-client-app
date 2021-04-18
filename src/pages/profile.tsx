@@ -120,6 +120,13 @@ const SignedIn = () => {
         I miei ordini
       </IonItem>
       <IonItemDivider />
+      <IonItem detail routerLink={`/profile/userReviews`} lines="none">
+        Le mie recensioni
+      </IonItem>
+      <IonItem detail routerLink={`/profile/createReview`} lines="none">
+        Aggiungi una recensione
+      </IonItem>
+      <IonItemDivider />
       <SignOut />
     </>
   );

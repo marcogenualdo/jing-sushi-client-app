@@ -29,6 +29,7 @@ import { Cart } from "./pages/cart";
 import Info from "./pages/info";
 import { CategoryDetail, MenuCategories } from "./pages/menu";
 import userOrders, { OrderDetail } from "./pages/user-orders";
+import { CreateReview, UserReviews } from "./pages/reviews";
 import Profile from "./pages/profile";
 /* Theme variables */
 import "./theme/variables.css";
@@ -47,6 +48,12 @@ export const BottomNav: React.FC = () => (
       <Route exact path="/:tab(cart)/order" component={OrderPage} />
       <Route exact path="/:tab(profile)" component={Profile} />
       <Route exact path="/:tab(profile)/userOrders" component={userOrders} />
+      <Route exact path="/:tab(profile)/userReviews" component={UserReviews} />
+      <Route
+        exact
+        path="/:tab(profile)/createReview"
+        component={CreateReview}
+      />
       <Route
         exact
         path="/:tab(profile)/userOrders/:orderNum"

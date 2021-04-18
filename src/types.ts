@@ -99,3 +99,12 @@ export interface SimpleTime {
   hour: number;
   minute: number;
 }
+
+export interface Review {
+  creationTime: Date;
+  name: string;
+  userId: string;
+  score: number;
+  title: string;
+  text: string;
+}

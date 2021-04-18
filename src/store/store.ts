@@ -8,12 +8,14 @@ import {
   InfoCollection,
   MenuCategoryData,
   Order,
+  Review,
   ZipCodes,
 } from "../types";
 import { addressSlice } from "./slices/address";
 import { cartSlice } from "./slices/cart";
 import { infoSlice } from "./slices/info";
 import { menuSlice } from "./slices/menu";
+import { reviewsSlice } from "./slices/reviews";
 import { userOrdersSlice } from "./slices/user-orders";
 import { zipsSlice } from "./slices/zip-codes";
 
@@ -25,6 +27,7 @@ const store = configureStore({
     zipCodes: zipsSlice.reducer,
     info: infoSlice.reducer,
     userOrders: userOrdersSlice.reducer,
+    reviews: reviewsSlice.reducer,
   },
 });
 
@@ -90,4 +93,15 @@ export const updateUserOrders = (orderData: Order[]) => {
     };
   });
   return store.dispatch(userOrdersSlice.actions.setUserOrders(serialized));
+};
+
+// reviews
+export const updateReviews = (orderData: Review[]) => {
+  const serialized = orderData.map((item) => {
+    return {
+      ...item,
+      creationTime: item.creationTime.toString(),
+    };
+  });
+  return store.dispatch(reviewsSlice.actions.setReviews(serialized));
 };

@@ -1,0 +1,12 @@
+.review-rating {
+  font-size: 1rem;
+  color: var(--ion-color-warning);
+}
+
+.review-title {
+  color: var(--ion-color-primary-contrast);
+}
+
+.review-name {
+  color: var(--ion-color-primary);
+}

@@ -1,14 +1,15 @@
 import firebase from "firebase";
+import { updateInfo, updateMenu, updateZipCodes } from "../store/store";
 import {
   Address,
   Contacts,
   MenuCategoryData,
   Order,
   OrderDraft,
+  Review,
   User,
   WeekOpeningTimes,
 } from "../types";
-import { updateInfo, updateMenu, updateZipCodes } from "../store/store";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBR3dh8ok7mxd4gqBIh4dw9BBYlUME7xBw",
@@ -110,4 +111,39 @@ export const listMyOrders = async (uid: string) => {
     };
   });
   return myOrders;
+};
+
+/**
+ * Returns the first 10 reviews in chronological order, of the specified user if specified, of all users otherwise.
+ */
+export const listReviews = async (userId?: string): Promise<Review[]> => {
+  const coll = firestore.collection("reviews");
+  const query = userId
+    ? coll
+        .where("userId", "==", userId)
+        .orderBy("creationTime", "desc")
+        .limit(10)
+    : coll.orderBy("creationTime", "desc").limit(10);
+
+  const data = await query.get();
+
+  console.info("Successfully got review list.");
+
+  const reviews = data.docs.map((item) => {
+    const dt = item.data();
+    return {
+      userId: dt.userId,
+      score: dt.score,
+      name: dt.name,
+      title: dt.title,
+      text: dt.text,
+      creationTime: dt.creationTime.toDate(),
+    };
+  });
+  return reviews;
+};
+
+export const putReview = async (review: Review) => {
+  await firestore.collection("reviews").doc().set(review);
+  console.info("Successfully created new review.");
 };
