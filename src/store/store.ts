@@ -78,5 +78,16 @@ export const updateInfo = (info: InfoCollection | null) =>
   store.dispatch(infoSlice.actions.setInfo(info));
 
 // orders
-export const updateUserOrders = (orderData: Order[]) =>
-  store.dispatch(userOrdersSlice.actions.setUserOrderCodes(orderData));
+/**
+ * Redux objects must be immutable so dates are encoded as strings in the store.
+ */
+export const updateUserOrders = (orderData: Order[]) => {
+  const serialized = orderData.map((item) => {
+    return {
+      ...item,
+      creationTime: item.creationTime.toString(),
+      deliveryTime: item.deliveryTime.toString(),
+    };
+  });
+  return store.dispatch(userOrdersSlice.actions.setUserOrders(serialized));
+};

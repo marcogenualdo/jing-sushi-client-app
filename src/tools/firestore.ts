@@ -94,7 +94,7 @@ export const listMyOrders = async (uid: string) => {
     .where("userId", "==", uid)
     .orderBy("creationTime", "desc")
     .get();
-  console.info("Successfully got order list.");
+  console.info("Successfully got user order list.");
   const myOrders = data.docs.map((item) => {
     const dt = item.data();
     return {

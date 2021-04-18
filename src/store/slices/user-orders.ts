@@ -15,7 +15,7 @@ export const userOrdersSlice = createSlice<
   name: "userOrders",
   initialState: userOrdersInitialState,
   reducers: {
-    setUserOrderCodes: (state, action: PayloadAction<Order[] | null>) =>
+    setUserOrders: (state, action: PayloadAction<Order[] | null>) =>
       action.payload,
   },
 });

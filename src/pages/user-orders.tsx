@@ -26,8 +26,9 @@ import defaultImage from "../assets/menu-default.jpg";
 
 const UserOrders: React.FC = () => {
   const [user] = useAuthState(auth);
-  const userOrders = useAppSelector((state) => state.userOrders);
-
+  const userOrders = useAppSelector(
+    (state) => state.userOrders && deserializeOrderTime(state.userOrders)
+  );
   useEffect(() => {
     if (user) {
       listMyOrders(user.uid).then((res) => updateUserOrders(res));
@@ -94,6 +95,18 @@ const OrderItem: React.FC<{ orderData: Order; orderNum: number }> = ({
 const orderTotal = (order: Order) =>
   order.plates.reduce((res, item) => res + item.price, 0);
 
+/**
+ * Redux objects must be immutable so dates are encoded as strings in the store.
+ */
+const deserializeOrderTime = (orders: Order[]) =>
+  orders.map((item) => {
+    return {
+      ...item,
+      creationTime: new Date(item.creationTime),
+      deliveryTime: new Date(item.deliveryTime),
+    };
+  });
+
 interface OrderDetailProps
   extends RouteComponentProps<{
     orderNum: string;
@@ -101,7 +114,9 @@ interface OrderDetailProps
 
 export const OrderDetail: React.FC<OrderDetailProps> = ({ match }) => {
   const orderNum = match.params.orderNum;
-  const orders = useAppSelector((state) => state.userOrders);
+  const orders = useAppSelector(
+    (state) => state.userOrders && deserializeOrderTime(state.userOrders)
+  );
   const orderData = orders && orders[Number(orderNum)];
 
   return (
