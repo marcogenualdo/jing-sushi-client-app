@@ -116,7 +116,7 @@ const SignedIn = () => {
         </p>
       )}
       <IonItemDivider />
-      <IonItem detail routerLink={`/profile/userOrders`}>
+      <IonItem detail routerLink={`/profile/userOrders`} lines="none">
         I miei ordini
       </IonItem>
       <IonItemDivider />

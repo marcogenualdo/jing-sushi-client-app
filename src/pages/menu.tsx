@@ -46,12 +46,12 @@ const MenuItem: React.FC<{ item: MenuItemData }> = ({ item }) => {
       </IonAvatar>
 
       <IonNote color="dark" className="menu-item-text">
-        <h4>{item.name}</h4>
+        <h6>{item.name}</h6>
         <p>{item.description}</p>
       </IonNote>
 
       <IonLabel slot="end" style={{ paddingRight: 0, mparginRight: 0 }}>
-        <h2 style={{ textAlign: "center" }}>{item.price.toFixed(2)} €</h2>
+        <h2 className="menu-item-price">{item.price.toFixed(2)} €</h2>
         <IonButtons
           slot="secondary"
           style={{ justifyContent: "center", paddingTop: "1.5rem" }}

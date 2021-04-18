@@ -9,7 +9,16 @@ ion-avatar {
   width: 18%;
 }
 
+.menu-item-text {
+  margin-top: 10%;
+}
+
 .menu-item-text h4,
 p {
   color: var(--ion-text-color);
+}
+
+.menu-item-price {
+  text-align: right;
+  margin: 0 1.5rem !important;
 }

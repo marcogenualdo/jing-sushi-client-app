@@ -64,7 +64,7 @@ const Info: React.FC = () => {
   return (
     <Layout pageName="Info">
       <IonList>
-        <IonItem>
+        <IonItem lines="none">
           <div slot="start" className="info-title">
             <strong>Jing Sushi</strong>
             <p>Sushi & Cucina orientale</p>
@@ -126,7 +126,7 @@ const Info: React.FC = () => {
             <IonItem>
               <IonTitle>Zone di consegna</IonTitle>
             </IonItem>
-            <IonItem>
+            <IonItem style={{ color: "#808080" }}>
               <IonLabel slot="start">CAP</IonLabel>
               <IonLabel style={{ textAlign: "right" }}>Ordine minimo</IonLabel>
             </IonItem>
@@ -153,7 +153,7 @@ const ContactsItem: React.FC<{
   href?: string;
 }> = ({ icon, label, value, href }) => {
   return (
-    <IonItem>
+    <IonItem lines="none">
       <IonLabel slot="start">
         <span className="contacts-icon">
           <IonIcon icon={icon} />

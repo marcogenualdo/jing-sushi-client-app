@@ -19,7 +19,7 @@
 
 .opening-time-range {
   font-size: 1.2rem;
-  color: #ffe86d;
+  color: var(--ion-color-secondary);
 }
 
 .contacts-icon {
