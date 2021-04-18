@@ -34,6 +34,7 @@ import Profile from "./pages/profile";
 import "./theme/variables.css";
 import { auth, fetchInfo, fetchMenu, fetchZipCodes } from "./tools/firestore";
 import { fetchAddress } from "./store/store";
+import OrderPage from "./pages/order";
 
 export const BottomNav: React.FC = () => (
   <IonTabs>
@@ -43,6 +44,7 @@ export const BottomNav: React.FC = () => (
       <Route exact path="/:tab(menu)" component={MenuCategories} />
       <Route exact path="/:tab(menu)/:category" component={CategoryDetail} />
       <Route exact path="/:tab(cart)" component={Cart} />
+      <Route exact path="/:tab(cart)/order" component={OrderPage} />
       <Route exact path="/:tab(profile)" component={Profile} />
       <Route exact path="/:tab(profile)/userOrders" component={userOrders} />
       <Route

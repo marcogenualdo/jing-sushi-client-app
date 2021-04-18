@@ -1,4 +1,5 @@
 import {
+  IonBackButton,
   IonButton,
   IonButtons,
   IonContent,
@@ -8,7 +9,7 @@ import {
   IonItemDivider,
   IonLabel,
   IonList,
-  IonModal,
+  IonPage,
   IonSegment,
   IonSegmentButton,
   IonTextarea,
@@ -32,10 +33,7 @@ import {
 } from "../types";
 import "../pages/cart.css";
 
-const OrderModal: React.FC<{
-  isOpen: boolean;
-  setIsOpen: (v: boolean) => void;
-}> = ({ isOpen, setIsOpen }) => {
+const OrderPage: React.FC = () => {
   // order data
   const [user] = useAuthState(auth);
   const currentAddress = useAppSelector((state) => state.address);
@@ -85,7 +83,6 @@ const OrderModal: React.FC<{
 
       // resetting UI
       setCanSendOrder(true);
-      setIsOpen(false);
     } catch (err) {
       console.error(err);
       // UI feedback
@@ -133,7 +130,7 @@ const OrderModal: React.FC<{
   }, [zipOk, zipCodes, orderTotal, orderData.deliveryAddress, minOrderOk]);
 
   return (
-    <IonModal isOpen={isOpen}>
+    <IonPage>
       <IonToast
         isOpen={showFailureToast}
         onDidDismiss={() => setShowFailureToast(false)}
@@ -153,10 +150,10 @@ const OrderModal: React.FC<{
 
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Ordine</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={() => setIsOpen(false)}>Chiudi</IonButton>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/cart" />
           </IonButtons>
+          <IonTitle>Ordine</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -299,11 +296,11 @@ const OrderModal: React.FC<{
           </IonButton>
         </IonList>
       </IonContent>
-    </IonModal>
+    </IonPage>
   );
 };
 
-export default OrderModal;
+export default OrderPage;
 
 /**
  * Returns strigified date with time zone offset.

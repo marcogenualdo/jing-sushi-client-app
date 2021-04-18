@@ -1,4 +1,3 @@
-import { home, logoFacebook, call, mail } from "ionicons/icons";
 import {
   IonAvatar,
   IonIcon,
@@ -9,12 +8,13 @@ import {
   IonList,
   IonTitle,
 } from "@ionic/react";
-import Layout from "../components/Layout";
-import { useAppSelector } from "../store/store";
-import { OpeningTime, WeekOpeningTimes, ZipCodes } from "../types";
-import "./info.css";
-import ListStopper from "../components/ListStopper";
+import { call, home, logoFacebook, mail } from "ionicons/icons";
 import jingImg from "../assets/menu-default.jpg";
+import Layout from "../components/Layout";
+import ListStopper from "../components/ListStopper";
+import { useAppSelector } from "../store/store";
+import { OpeningTime, WeekOpeningTimes } from "../types";
+import "./info.css";
 
 const weekDaysNames: Record<keyof WeekOpeningTimes, string> = {
   0: "Domenica",
@@ -131,7 +131,7 @@ const Info: React.FC = () => {
               <IonLabel style={{ textAlign: "right" }}>Ordine minimo</IonLabel>
             </IonItem>
             {Object.keys(zipCodes).map((key) => (
-              <IonItem>
+              <IonItem key={key}>
                 <IonLabel slot="start">{key}</IonLabel>
                 <IonLabel slot="end">{zipCodes[key].toFixed(2)} €</IonLabel>
               </IonItem>

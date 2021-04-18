@@ -11,6 +11,7 @@ import {
   IonLabel,
   IonList,
   IonNote,
+  IonRouterLink,
 } from "@ionic/react";
 import {
   addOutline,
@@ -18,26 +19,24 @@ import {
   sendOutline,
   trashOutline,
 } from "ionicons/icons";
-import React, { useState } from "react";
+import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import defaultImage from "../assets/menu-default.jpg";
 import Layout from "../components/Layout";
-import OrderModal from "../components/OrderModal";
-import { auth } from "../tools/firestore";
+import ListStopper from "../components/ListStopper";
 import {
   cartItemDecrement,
   cartItemIncrement,
   cartItemTrash,
   useAppSelector,
 } from "../store/store";
+import { auth } from "../tools/firestore";
 import { CartItemData } from "../types";
 import "./cart.css";
-import ListStopper from "../components/ListStopper";
 
 export const Cart: React.FC = () => {
   const [user] = useAuthState(auth);
   const cartData = useAppSelector((state) => state.cart);
-  const [showOrderModal, setShowOrderModal] = useState(false);
 
   return (
     <Layout pageName="Carrello">
@@ -68,18 +67,14 @@ export const Cart: React.FC = () => {
         <ListStopper />
       </IonList>
       {user && (
-        <IonFab
-          vertical="bottom"
-          horizontal="end"
-          slot="fixed"
-          onClick={() => setShowOrderModal(true)}
-        >
-          <IonFabButton className="cart-fab">
-            <span>ORDINA</span> <IonIcon icon={sendOutline} />
-          </IonFabButton>
+        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonRouterLink routerLink="/cart/order">
+            <IonFabButton className="cart-fab">
+              <span>ORDINA</span> <IonIcon icon={sendOutline} />
+            </IonFabButton>
+          </IonRouterLink>
         </IonFab>
       )}
-      <OrderModal isOpen={showOrderModal} setIsOpen={setShowOrderModal} />
     </Layout>
   );
 };
