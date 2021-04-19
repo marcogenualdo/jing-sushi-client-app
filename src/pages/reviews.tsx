@@ -130,6 +130,7 @@ export const CreateReview: React.FC = () => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showFailureToast, setShowFailureToast] = useState(false);
 
+  // data
   const [reviewData, dispatchReviewData] = useReducer(reviewReducer, {
     creationTime: new Date(),
     userId: user?.uid ?? "",
@@ -141,6 +142,14 @@ export const CreateReview: React.FC = () => {
   useEffect(() => {
     if (user) dispatchReviewData({ type: "userId", value: user.uid });
   }, [user]);
+
+  // form validation
+  const [formIsValid, setFormIsValid] = useState(false);
+  useEffect(() => {
+    setFormIsValid(
+      !!reviewData.name && !!reviewData.score && !!reviewData.title
+    );
+  }, [reviewData]);
 
   const setScore = (score: number) =>
     dispatchReviewData({ type: "score", value: score });
@@ -175,7 +184,7 @@ export const CreateReview: React.FC = () => {
       />
       <IonList>
         <IonItem lines="none">
-          <IonLabel position="stacked">Nome</IonLabel>
+          <IonLabel position="stacked">Nome*</IonLabel>
           <IonInput
             value={reviewData.name}
             placeholder="Nome..."
@@ -188,12 +197,12 @@ export const CreateReview: React.FC = () => {
           />
         </IonItem>
         <IonItem lines="none">
-          <IonLabel>Punteggio</IonLabel>
+          <IonLabel>Punteggio*</IonLabel>
           <EditableStarScore score={reviewData.score} setScore={setScore} />
         </IonItem>
         <IonItemDivider />
         <IonItem lines="none">
-          <IonLabel position="stacked">Titolo</IonLabel>
+          <IonLabel position="stacked">Titolo*</IonLabel>
           <IonInput
             value={reviewData.title}
             placeholder="Titolo..."
@@ -220,10 +229,14 @@ export const CreateReview: React.FC = () => {
             }
           ></IonTextarea>
         </IonItem>
+        <IonItem>
+          <IonNote slot="end">* Campo obbligatorio</IonNote>
+        </IonItem>
         <IonButton
           expand="block"
           style={{ padding: "0 1rem" }}
           onClick={sendReview}
+          disabled={!formIsValid}
         >
           Invia
         </IonButton>
